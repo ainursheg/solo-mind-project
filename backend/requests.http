@@ -1,0 +1,46 @@
+###ai 
+###sk-9303412a5efd4672a9be217196a54dc8
+
+###groq
+### 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
+
+### Запрос на регистрацию нового пользователя
+POST http://localhost:3001/auth/signup
+Content-Type: application/json
+
+{
+  "name": "Satoru Gojo",
+  "email": "satoru@jujutsu.com",
+  "password": "strongpassword123"
+}
+
+### Вход существующего пользователя
+POST http://localhost:3001/auth/login
+Content-Type: application/json
+
+{
+  "email": "satoru@jujutsu.com",
+  "password": "strongpassword123"
+}
+
+### Получение профиля пользователя (защищенный маршрут)
+GET http://localhost:3001/profile
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTc1MDE3MDY1NiwiZXhwIjoxNzUwMjU3MDU2fQ.82SQN9hCmbdlXZOmBLcuJXcY67M-Ikh3DU2o3-J7pjI
+
+### Выполнить упражнение и получить XP
+POST http://localhost:3001/activity/exercise
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTc1MDE3MDY1NiwiZXhwIjoxNzUwMjU3MDU2fQ.82SQN9hCmbdlXZOmBLcuJXcY67M-Ikh3DU2o3-J7pjI
+
+{
+  "exerciseName": "10 Отжиманий"
+}
+
+### Сгенерировать тест с помощью AI
+POST http://localhost:3001/ai/generate-quiz
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTc1MDE3MDY1NiwiZXhwIjoxNzUwMjU3MDU2fQ.82SQN9hCmbdlXZOmBLcuJXcY67M-Ikh3DU2o3-J7pjI
+
+{
+  "text": "Солнечная система состоит из восьми планет. Меркурий — ближайшая к Солнцу планета, а Нептун — самая дальняя. Земля является третьей планетой от Солнца и единственной известной планетой, на которой есть жизнь. Юпитер — самая большая планета в Солнечной системе."
+}

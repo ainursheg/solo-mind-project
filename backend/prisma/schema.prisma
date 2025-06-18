@@ -1,0 +1,70 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// === НАША МОДЕЛЬ ДАННЫХ ===
+
+// Модель Пользователя (для аутентификации)
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  name      String?  // Знак '?' означает, что поле необязательное
+
+  // Связь: один User может иметь один Profile
+  profile   Profile?
+  
+  // Связь: один User может иметь много записей в логе
+  activities ActivityLog[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Модель Профиля Героя (игровые данные)
+model Profile {
+  id        Int      @id @default(autoincrement())
+  level     Int      @default(1)
+  currentXp Int      @default(0)
+  xpToNextLevel Int  @default(100)
+  
+  statStr   Int      @default(5)
+  statEnd   Int      @default(5)
+  statAgi   Int      @default(5)
+  statInt   Int      @default(5)
+  statWis   Int      @default(5)
+  statFoc   Int      @default(5)
+
+  isReadingUnlocked Boolean @default(true)
+
+  // Связь с пользователем (один-к-одному)
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int      @unique // ID пользователя, к которому привязан этот профиль
+}
+
+// Модель для записи всех действий пользователя
+model ActivityLog {
+  id        Int      @id @default(autoincrement())
+  activityType String
+  description  String
+  xpGained     Int
+  statAffected String?
+
+  // Связь с пользователем (многие-к-одному)
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+
+  createdAt DateTime @default(now())
+}
