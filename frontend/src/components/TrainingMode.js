@@ -13,7 +13,6 @@ const exercisesDB = [
 
 const API_URL = 'http://localhost:3001';
 
-// Принимаем пропс onClose, чтобы модальное окно можно было закрыть
 const TrainingMode = ({ onClose }) => {
   const { token, updateUserAndProfile } = useAuth();
   const [exerciseId, setExerciseId] = useState(exercisesDB[0].id);
@@ -25,20 +24,15 @@ const TrainingMode = ({ onClose }) => {
     e.preventDefault();
     setError('');
     setIsLoading(true);
-
     try {
       const response = await axios.post(
         `${API_URL}/activity/exercise`,
-        {
-          exerciseId: parseInt(exerciseId),
-          reps: parseInt(reps),
-          isTrainingMode: true, // В этом компоненте флаг ВСЕГДА true
-        },
+        { exerciseId: parseInt(exerciseId), reps: parseInt(reps), isTrainingMode: true },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       updateUserAndProfile(response.data);
       alert('Тренировка засчитана! Статы выросли.');
-      onClose(); // Закрываем модальное окно после успеха
+      onClose();
     } catch (err) {
       setError(err.response?.data?.message || 'Произошла ошибка.');
     } finally {
@@ -47,25 +41,24 @@ const TrainingMode = ({ onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50">
-      <div className="w-full max-w-md p-8 space-y-6 bg-gray-800 rounded-lg shadow-md text-white relative">
-        <button onClick={onClose} className="absolute top-4 right-4 text-gray-400 hover:text-white">×</button>
-        <h2 className="text-2xl font-bold text-center">Режим Тренировки</h2>
-        <p className="text-center text-sm text-gray-400">Рост статов без получения XP.</p>
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex justify-center items-center z-50 animate-fade-in-up">
+      <div className="w-full max-w-md p-8 space-y-6 bg-background-secondary rounded-2xl shadow-xl text-text-primary border border-success/30 relative">
+        <button onClick={onClose} className="absolute top-3 right-4 text-text-secondary hover:text-white text-2xl font-bold">×</button>
+        <h2 className="text-2xl font-display font-bold text-center">Режим Тренировки</h2>
+        <p className="text-center text-sm text-text-secondary">Рост статов без получения XP.</p>
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* ... (здесь форма, аналогичная той, что была в EnduranceGate) ... */}
            <div>
-              <label htmlFor="exercise-training" className="block text-sm font-medium text-gray-300">Упражнение</label>
-              <select id="exercise-training" value={exerciseId} onChange={(e) => setExerciseId(e.target.value)} className="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md">
+              <label htmlFor="exercise-training" className="block text-sm font-medium text-text-secondary">Упражнение</label>
+              <select id="exercise-training" value={exerciseId} onChange={(e) => setExerciseId(e.target.value)} className="mt-1 block w-full px-3 py-2 bg-background-primary border border-text-secondary/30 rounded-md focus:ring-success focus:border-success transition">
                 {exercisesDB.map(ex => <option key={ex.id} value={ex.id}>{ex.name}</option>)}
               </select>
             </div>
             <div>
-              <label htmlFor="reps-training" className="block text-sm font-medium text-gray-300">Повторения</label>
-              <input id="reps-training" type="number" value={reps} onChange={(e) => setReps(e.target.value)} placeholder="Количество" className="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md" required />
+              <label htmlFor="reps-training" className="block text-sm font-medium text-text-secondary">Повторения</label>
+              <input id="reps-training" type="number" value={reps} onChange={(e) => setReps(e.target.value)} placeholder="Количество" className="mt-1 block w-full px-3 py-2 bg-background-primary border border-text-secondary/30 rounded-md focus:ring-success focus:border-success transition" required />
             </div>
-            {error && <p className="text-sm text-red-500 text-center">{error}</p>}
-            <button type="submit" disabled={isLoading} className="w-full flex justify-center py-2 px-4 border rounded-md text-sm font-medium text-white bg-green-600 hover:bg-green-700 disabled:bg-gray-500">
+            {error && <p className="text-sm text-danger text-center">{error}</p>}
+            <button type="submit" disabled={isLoading} className="w-full flex justify-center py-3 px-4 rounded-md text-sm font-medium text-white bg-success shadow-lg transition-all duration-300 ease-in-out hover:shadow-glow-primary hover:-translate-y-0.5 disabled:bg-background-secondary disabled:text-text-secondary disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none">
               {isLoading ? 'Сохранение...' : 'Завершить подход'}
             </button>
         </form>

@@ -3,13 +3,14 @@
 
 import { useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
+import { useGame } from '../context/GameContext'; // Импортируем, чтобы получить onQuizReady
 import axios from 'axios';
 
 const API_URL = 'http://localhost:3001';
 
-// Принимаем в props функцию onQuizReady, которую нам передал Dashboard
-const ImageUploader = ({ onQuizReady }) => {
+const ImageUploader = () => {
   const { token } = useAuth();
+  const { handleQuizReady } = useGame(); // Получаем функцию из контекста
   const [file, setFile] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -24,60 +25,40 @@ const ImageUploader = ({ onQuizReady }) => {
       setError('Пожалуйста, выберите файл для загрузки.');
       return;
     }
-
     setError('');
     setIsLoading(true);
-
     const formData = new FormData();
     formData.append('image', file);
-
     try {
-      // Отправляем файл на бэкенд, который сам сделает OCR и сгенерирует квиз
-      const response = await axios.post(
-        `${API_URL}/ocr/upload-and-process`,
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      // ГЛАВНОЕ ИЗМЕНЕНИЕ:
-      // Вместо того чтобы обрабатывать квиз здесь, мы передаем его наверх в Dashboard
-      onQuizReady(response.data);
-
+      const response = await axios.post(`${API_URL}/ocr/upload-and-process`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${token}` },
+      });
+      handleQuizReady(response.data); // Используем функцию из контекста
     } catch (err) {
       setError(err.response?.data?.message || 'Произошла ошибка при обработке изображения.');
-      console.error(err);
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="w-full max-w-md p-8 space-y-6 bg-gray-800 rounded-lg shadow-md text-white">
-      <h1 className="text-2xl font-bold text-center">Шаг 1: Загрузка Знаний</h1>
+    <div className="w-full p-8 space-y-6 bg-background-secondary/70 backdrop-blur-md rounded-lg shadow-xl border border-accent-primary/20 text-text-primary">
+      <h1 className="text-2xl font-display font-bold text-center">Шаг 1: Загрузка Знаний</h1>
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
-          <label htmlFor="image-upload" className="block text-sm font-medium text-gray-300">
+          <label htmlFor="image-upload" className="block text-sm font-medium text-text-secondary">
             Выберите скриншот страницы
           </label>
           <input
-            id="image-upload"
-            type="file"
-            accept="image/*"
-            onChange={handleFileChange}
-            className="mt-1 block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+            id="image-upload" type="file" accept="image/*" onChange={handleFileChange}
+            className="mt-1 block w-full text-sm text-text-secondary file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-accent-primary/20 file:text-accent-primary hover:file:bg-accent-primary/30"
           />
         </div>
-        {error && <p className="text-sm text-red-500 text-center">{error}</p>}
+        {error && <p className="text-sm text-danger text-center">{error}</p>}
         <div>
           <button
-            type="submit"
-            disabled={isLoading || !file}
-            className="w-full flex justify-center py-2 px-4 border rounded-md text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-500"
+            type="submit" disabled={isLoading || !file}
+            className="w-full flex justify-center py-3 px-4 rounded-md text-sm font-medium text-white bg-accent-primary shadow-lg transition-all duration-300 ease-in-out hover:shadow-glow-primary hover:-translate-y-0.5 disabled:bg-background-secondary disabled:text-text-secondary disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
           >
             {isLoading ? 'Анализ текста...' : 'Сгенерировать квиз'}
           </button>

@@ -3,7 +3,7 @@
 
 import { useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
-import { useRouter } from 'next/navigation'; // Используем новый роутер из Next.js 13+
+import { useRouter } from 'next/navigation';
 
 const LoginForm = () => {
   const [email, setEmail] = useState('');
@@ -16,47 +16,47 @@ const LoginForm = () => {
     e.preventDefault();
     setError('');
     try {
-      // v7.0 ИСПРАВЛЕНИЕ: Делегируем всю логику входа нашему хуку
       await auth.login(email, password);
-      
-      // Если логин прошел успешно (ошибки не было), перенаправляем на дашборд
       router.push('/dashboard');
-
     } catch (err) {
-      // Если хук auth.login выбросил ошибку, мы ее здесь ловим
       setError(err.response?.data?.message || 'Произошла ошибка при входе');
-      console.error(err); // Логируем ошибку для отладки
     }
   };
 
   return (
-    <div className="w-full max-w-md p-8 space-y-6 bg-gray-800 rounded-lg shadow-md">
-      <h1 className="text-2xl font-bold text-center text-white">Вход в Solo Mind</h1>
+    <div className="w-full max-w-md p-8 space-y-6 bg-background-secondary rounded-2xl shadow-xl text-text-primary border border-accent-primary/20">
+      <h1 className="text-3xl font-display font-bold text-center">Вход в Solo Mind</h1>
+      
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
-          <label /* ... */ >Email</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="..."
-            required
+          <label htmlFor="email" className="block text-sm font-medium text-text-secondary">Email</label>
+          <input 
+            id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required 
+            className="mt-1 block w-full px-3 py-2 bg-background-primary border border-text-secondary/30 rounded-md focus:outline-none focus:ring-2 focus:ring-accent-primary focus:border-transparent transition"
           />
         </div>
+        
         <div>
-          <label /* ... */ >Пароль</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="..."
-            required
+          <label htmlFor="password" className="block text-sm font-medium text-text-secondary">Пароль</label>
+          <input 
+            id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required 
+            className="mt-1 block w-full px-3 py-2 bg-background-primary border border-text-secondary/30 rounded-md focus:outline-none focus:ring-2 focus:ring-accent-primary focus:border-transparent transition"
           />
         </div>
-        {error && <p className="text-sm text-red-500 text-center">{error}</p>}
+        
+        {error && <p className="text-sm text-danger text-center">{error}</p>}
+        
         <div>
-          <button type="submit" className="...">
-            Войти
+          <button 
+            type="submit" disabled={auth.loading} 
+            className="
+              w-full flex justify-center py-3 px-4 rounded-md text-sm font-medium text-white bg-accent-primary shadow-lg 
+              transition-all duration-300 ease-in-out
+              hover:shadow-glow-primary hover:-translate-y-0.5
+              disabled:bg-background-secondary disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none
+            "
+          >
+            {auth.loading ? 'Вход...' : 'Войти'}
           </button>
         </div>
       </form>

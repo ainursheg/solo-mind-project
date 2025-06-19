@@ -1,116 +1,80 @@
+// components/SignupForm.js
 'use client';
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function SignupForm() {
     const router = useRouter(); 
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState(''); // Для сообщения об успехе
-  const [loading, setLoading] = useState(false);
+    const auth = useAuth();
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
-    setSuccess('');
-    setLoading(true);
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setError('');
+        setLoading(true);
+        try {
+            await axios.post('http://localhost:3001/auth/signup', { name, email, password });
+            await auth.login(email, password);
+            router.push('/dashboard');
+        } catch (err) {
+            setError(err.response?.data?.message || 'Не удалось подключиться к серверу');
+        } finally {
+            setLoading(false);
+        }
+    };
 
-    try {
-      await axios.post('http://localhost:3001/auth/signup', {
-        name,
-        email,
-        password,
-      });
-      // 2. Сразу после этого логиним его, чтобы получить токен
-  const loginResponse = await axios.post('http://localhost:3001/auth/login', { email, password });
-  const { token } = loginResponse.data;
-  localStorage.setItem('solo-mind-token', token);
+    return (
+      <div className="w-full max-w-md p-8 space-y-6 bg-background-secondary rounded-2xl shadow-xl text-text-primary border border-accent-secondary/20">
+        <h1 className="text-3xl font-display font-bold text-center">Создать Аккаунт</h1>
 
-  // 3. И только теперь перенаправляем на калибровку
-  router.push('/calibrate');
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label htmlFor="name" className="block text-sm font-medium text-text-secondary">Имя Героя</label>
+            <input
+              id="name" type="text" required value={name} onChange={(e) => setName(e.target.value)}
+              className="mt-1 block w-full px-3 py-2 bg-background-primary border border-text-secondary/30 rounded-md focus:outline-none focus:ring-2 focus:ring-accent-secondary focus:border-transparent transition"
+            />
+          </div>
 
-    } catch (err) {
-      console.error('Ошибка регистрации:', err.response?.data?.message || 'Что-то пошло не так');
-      setError(err.response?.data?.message || 'Не удалось подключиться к серверу');
-    } finally {
-      setLoading(false);
-    }
-  };
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-text-secondary">Email</label>
+            <input
+              id="email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)}
+              className="mt-1 block w-full px-3 py-2 bg-background-primary border border-text-secondary/30 rounded-md focus:outline-none focus:ring-2 focus:ring-accent-secondary focus:border-transparent transition"
+            />
+          </div>
 
-  return (
-    <form onSubmit={handleSubmit} className="space-y-6 max-w-sm mx-auto p-8 bg-gray-900 rounded-lg shadow-lg">
-      {/* Поле для Имени */}
-      <div>
-        <label htmlFor="name" className="block text-sm font-medium text-gray-300">
-          Имя Героя
-        </label>
-        <div className="mt-1">
-          <input
-            id="name"
-            name="name"
-            type="text"
-            required
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white focus:ring-purple-500 focus:border-purple-500"
-          />
-        </div>
+          <div>
+            <label htmlFor="password" className="block text-sm font-medium text-text-secondary">Пароль</label>
+            <input
+              id="password" type="password" required minLength="6" value={password} onChange={(e) => setPassword(e.target.value)}
+              className="mt-1 block w-full px-3 py-2 bg-background-primary border border-text-secondary/30 rounded-md focus:outline-none focus:ring-2 focus:ring-accent-secondary focus:border-transparent transition"
+            />
+          </div>
+
+          {error && <p className="text-sm text-danger text-center">{error}</p>}
+
+          <div>
+            <button
+              type="submit" disabled={loading}
+              className="
+                w-full flex justify-center py-3 px-4 rounded-md text-sm font-medium text-white bg-accent-secondary shadow-lg 
+                transition-all duration-300 ease-in-out
+                hover:shadow-glow-primary hover:-translate-y-0.5
+                disabled:bg-background-secondary disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none
+              "
+            >
+              {loading ? 'Создание...' : 'Создать'}
+            </button>
+          </div>
+        </form>
       </div>
-
-      {/* Поле для Email */}
-      <div>
-        <label htmlFor="email" className="block text-sm font-medium text-gray-300">
-          Email
-        </label>
-        <div className="mt-1">
-          <input
-            id="email"
-            name="email"
-            type="email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white focus:ring-purple-500 focus:border-purple-500"
-          />
-        </div>
-      </div>
-
-      {/* Поле для Пароля */}
-      <div>
-        <label htmlFor="password" className="block text-sm font-medium text-gray-300">
-          Пароль
-        </label>
-        <div className="mt-1">
-          <input
-            id="password"
-            name="password"
-            type="password"
-            required
-            minLength="6" // Добавим минимальную длину для безопасности
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white focus:ring-purple-500 focus:border-purple-500"
-          />
-        </div>
-      </div>
-
-      {/* Блоки для сообщений */}
-      {error && <p className="text-sm text-red-500 text-center">{error}</p>}
-      {success && <p className="text-sm text-green-500 text-center">{success}</p>}
-
-      <div>
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:bg-purple-400 disabled:cursor-not-allowed"
-        >
-          {loading ? 'Создание...' : 'Создать'}
-        </button>
-      </div>
-    </form>
-  );
+    );
 }

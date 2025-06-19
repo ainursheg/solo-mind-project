@@ -1,12 +1,13 @@
-'use client'; // <--- ДОБАВИТЬ ЭТУ СТРОКУ
+// frontend/src/app/page.js
+'use client';
 
-import LoginForm from "@/components/LoginForm"; // '@/' - это удобный псевдоним для папки 'src'
-import { useAuth } from "@/hooks/useAuth"; // Импортируем наш хук
+import LoginForm from "@/components/LoginForm";
+import { useAuth } from "@/hooks/useAuth";
+import Link from 'next/link'; // 1. Импортируем Link
 
 export default function LoginPage() {
   const { loading } = useAuth();
 
-  // Пока идет проверка токена, показываем заглушку
   if (loading) {
     return <div className="min-h-screen flex items-center justify-center"><p>Загрузка...</p></div>;
   }
@@ -14,10 +15,21 @@ export default function LoginPage() {
   return (
     <main className="min-h-screen flex flex-col items-center justify-center">
       <div className="text-center mb-10">
-        <h1 className="text-4xl font-bold text-white">Solo Mind</h1>
-        <p className="text-lg text-gray-400 mt-2">Войди, чтобы начать прокачку</p>
+        {/* Используем цвета и шрифты из нашей темы */}
+        <h1 className="text-4xl font-display font-bold text-text-primary">Solo Mind</h1>
+        <p className="text-lg text-text-secondary mt-2">Войди, чтобы начать прокачку</p>
       </div>
       <LoginForm />
+      
+      {/* 2. ДОБАВЛЯЕМ ССЫЛКУ НА РЕГИСТРАЦИЮ */}
+      <div className="mt-4">
+        <p className="text-sm text-text-secondary">
+          Еще нет аккаунта?{' '}
+          <Link href="/signup" className="font-medium text-accent-primary hover:text-accent-primary/80 transition-colors">
+            Создать
+          </Link>
+        </p>
+      </div>
     </main>
   );
 }

@@ -1,8 +1,58 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* frontend/src/app/globals.css */
 
+/* 1. Импортируем Tailwind CSS v4 */
+@import "tailwindcss";
+
+/* 
+  2. Определяем нашу кастомную тему.
+  Используем "inline" для правильной обработки ссылок на переменные шрифтов.
+*/
+@theme inline {
+  /* --- Цветовая палитра "Solo Mind" --- */
+  --color-background-primary: #111827;
+  --color-background-secondary: #1F2937;
+  
+  --color-text-primary: #E5E7EB;
+  --color-text-secondary: #9CA3AF;
+  
+  --color-accent-primary: #6366F1;
+  --color-accent-secondary: #A78BFA;
+  --color-accent-gold: #FBBF24;
+  
+  /* --- Семантические цвета --- */
+  --color-success: #22C55E;
+  --color-danger: #EF4444;
+  --color-warning: #F59E0B;
+  
+  /* --- Шрифты (ссылаются на переменные из layout.js) --- */
+  --font-sans: var(--font-poppins);
+  --font-display: var(--font-orbitron);
+  
+  /* --- Тени --- */
+  --shadow-glow-primary: 0 0 15px 5px rgba(99, 102, 241, 0.4);
+
+  /* --- АНИМАЦИЯ (здесь только переменная) --- */
+  --animate-fade-in-up: fade-in-up 0.5s ease-out;
+}
+
+/* 
+  3. Описываем саму анимацию ВНЕ блока @theme.
+  Это более безопасный подход, который решает проблему с "Unclosed block".
+*/
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 4. Применяем базовые стили с помощью стандартной функции var() */
 body {
-  background-color: #111827; /* Темно-серый фон */
-  color: #E5E7EB; /* Светло-серый текст */
+  background-color: var(--color-background-primary);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
 }
