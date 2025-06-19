@@ -25,9 +25,13 @@ export default function SignupForm() {
         email,
         password,
       });
-      
-      alert('Регистрация прошла успешно! Перенаправляем на страницу входа...'); // Временно для наглядности
-      router.push('/'); // <--- ДОБАВЛЯЕМ РЕДИРЕКТ НА ГЛАВНУЮ (СТРАНИЦУ ВХОДА)
+      // 2. Сразу после этого логиним его, чтобы получить токен
+  const loginResponse = await axios.post('http://localhost:3001/auth/login', { email, password });
+  const { token } = loginResponse.data;
+  localStorage.setItem('solo-mind-token', token);
+
+  // 3. И только теперь перенаправляем на калибровку
+  router.push('/calibrate');
 
     } catch (err) {
       console.error('Ошибка регистрации:', err.response?.data?.message || 'Что-то пошло не так');

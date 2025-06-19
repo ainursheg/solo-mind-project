@@ -1,164 +1,116 @@
-# Проект "Solo Mind" (v0.2.0 - MVP)
+# Проект "Solo Mind" (v0.3.0-MVP)
 
-Это Full-Stack веб-приложение для геймификации саморазвития, вдохновленное "Solo Leveling". Пользователь прокачивает свои реальные навыки, выполняя квесты в приложении.
+**Solo Mind** — это Full-Stack приложение для геймификации саморазвития, вдохновленное манхвой "Solo Leveling". Приложение помогает пользователям превратить рутинные действия по улучшению физических и интеллектуальных навыков в увлекательный игровой процесс с прокачкой персонажа.
 
 ---
 
 ## 1. Технологический Стек
 
-*   **Frontend:** React, Next.js, Tailwind CSS, axios
-*   **Backend:** Node.js, Express, Prisma, PostgreSQL
+*   **Frontend:** React, Next.js (App Router), Tailwind CSS, Axios
+*   **Backend:** Node.js, Express.js
+*   **База данных:** PostgreSQL с Prisma ORM
 *   **Внешние API:**
-    *   **OCR:** OCR.space (для распознавания текста с изображений)
-    *   **AI/LLM:** Groq (модель Llama 3 для генерации квизов)
+    *   **OCR.space:** для распознавания текста с изображений.
+    *   **Groq (Llama 3):** для генерации квизов на основе распознанного текста.
 
 ---
 
 ## 2. Структура Проекта
 
+Проект представляет собой монорепозиторий с двумя основными частями: `backend` и `frontend`.
+
 ```
 solo-mind-project/
-├── backend/ # Бэкенд-сервер на Express
-│ ├── prisma/ # Схема и миграции базы данных
-│ ├── middleware/ # Middleware (auth.js)
-│ ├── .env # Секретные ключи
-│ └── index.js # Главный файл сервера
-├── frontend/ # Фронтенд-приложение на Next.js
-│ ├── src/
-│ │ ├── app/ # Страницы и роутинг
-│ │ ├── components/ # React-компоненты
-│ │ └── hooks/ # React-хуки (useAuth.js)
-└── README.md # Этот файл
+├── backend/          # Бэкенд-сервер на Express
+│   ├── prisma/       # Схема и миграции базы данных
+│   ├── services/     # "Чистая" игровая логика (gameMechanicsService.js)
+│   └── index.js      # Главный файл сервера
+├── frontend/         # Фронтенд-приложение на Next.js
+│   └── src/
+│       ├── app/      # Страницы и роутинг (App Router)
+│       ├── components/ # Переиспользуемые React-компоненты
+│       ├── context/  # Глобальные контексты (GameContext.js)
+│       └── hooks/    # React-хуки (useAuth.js)
+└── README.md         # Этот файл
 ```
 
 ---
 
-## 3. Модели Данных (Схема Prisma)
+## 3. Модель Данных (Архитектура "Накопитель / Витрина")
 
+Мы используем архитектурный паттерн, разделяющий "сырые" данные и "отображаемое" состояние.
+
+*   **`User` (Накопитель):** Хранит вечно накапливающиеся метрики усилий пользователя (`totalMindEffort`, `totalBodyEffort`, `quizzesPassed` и т.д.). Это "сырые" данные о проделанной работе.
+*   **`Profile` (Витрина):** Хранит вычисляемое состояние персонажа, которое видит пользователь (`level`, `currentXp`, статы `STR`, `END`, `INT`, `WIS`). Эти данные являются производными от метрик в модели `User`.
+
+Этот подход позволяет гибко менять логику начисления статов и уровней, не затрагивая историю достижений пользователя. Полная схема находится в файле `backend/prisma/schema.prisma`.
+
+---
+
+## 4. API Эндпоинты
+
+### Аутентификация
+*   `POST /auth/signup` - Регистрация нового пользователя.
+*   `POST /auth/login` - Вход пользователя, возвращает JWT токен.
+
+### Защищенные маршруты (требуют `Authorization: Bearer <token>`)
+*   `GET /profile` - Получение полного профиля текущего пользователя (включая данные `User` и `Profile`).
+*   `POST /ocr/upload-and-process` - Загрузка изображения, распознавание текста, начисление `MindEffort` и генерация квиза.
+*   `POST /activity/submit-quiz` - Отправка ответа на квиз. При успехе увеличивает `quizzesPassed`, пересчитывает `WIS` и блокирует чтение.
+*   `POST /activity/exercise` - Запись о выполнении упражнения. Начисляет опыт, пересчитывает статы, проверяет level-up и разблокирует чтение.
+
+---
+
+## 5. Основной Игровой Цикл
+
+Игровой процесс построен на трехфазном цикле, управляемом флагом `isReadingUnlocked` в профиле пользователя.
+
+*   **Фаза 1: Чтение и Генерация Квиза (`isReadingUnlocked: true`)**
+    1.  Пользователь загружает изображение с текстом.
+    2.  Бэкенд распознает текст, генерирует квиз и возвращает его на фронтенд.
+
+*   **Фаза 2: Прохождение Квиза**
+    1.  Пользователь отвечает на вопрос квиза.
+    2.  При правильном ответе бэкенд обновляет статы, начисляет прогресс и устанавливает `isReadingUnlocked = false`.
+
+*   **Фаза 3: Физическое Упражнение (`isReadingUnlocked: false`)**
+    1.  Интерфейс блокирует чтение и предлагает выполнить упражнение.
+    2.  Пользователь вводит количество повторений.
+    3.  Бэкенд начисляет "Единый Опыт" (Unity XP), обновляет статы, проверяет повышение уровня и устанавливает `isReadingUnlocked = true`.
+    4.  Цикл завершен и готов к новому витку.
+
+---
+
+## 6. Как запустить проект локально
+
+### 1. Настройка Бэкенда:
+```bash
+# Перейдите в папку бэкенда
+cd backend
+
+# Установите зависимости
+npm install
+
+# Создайте файл .env по примеру .env.example и заполните его
+# (DATABASE_URL, JWT_SECRET, OCR_API_KEY, GROQ_API_KEY)
+
+# Примените миграции базы данных
+npx prisma migrate dev
+
+# Запустите сервер разработки
+npm run dev
+# Сервер будет доступен по адресу http://localhost:3001
 ```
 
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+### 2. Настройка Фронтенда:
+```bash
+# Перейдите в папку фронтенда
+cd frontend
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+# Установите зависимости
+npm install
 
-generator client {
-  provider = "prisma-client-js"
-  output   = "../generated/prisma"
-}
-
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
-
-// === НАША МОДЕЛЬ ДАННЫХ ===
-
-// Модель Пользователя (для аутентификации)
-model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  password  String
-  name      String?  // Знак '?' означает, что поле необязательное
-
-  // Связь: один User может иметь один Profile
-  profile   Profile?
-  
-  // Связь: один User может иметь много записей в логе
-  activities ActivityLog[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-// Модель Профиля Героя (игровые данные)
-model Profile {
-  id        Int      @id @default(autoincrement())
-  level     Int      @default(1)
-  currentXp Int      @default(0)
-  xpToNextLevel Int  @default(100)
-  
-  statStr   Int      @default(5)
-  statEnd   Int      @default(5)
-  statAgi   Int      @default(5)
-  statInt   Int      @default(5)
-  statWis   Int      @default(5)
-  statFoc   Int      @default(5)
-
-  isReadingUnlocked Boolean @default(true)
-
-  // Связь с пользователем (один-к-одному)
-  user      User     @relation(fields: [userId], references: [id])
-  userId    Int      @unique // ID пользователя, к которому привязан этот профиль
-}
-
-// Модель для записи всех действий пользователя
-model ActivityLog {
-  id        Int      @id @default(autoincrement())
-  activityType String
-  description  String
-  xpGained     Int
-  statAffected String?
-
-  // Связь с пользователем (многие-к-одному)
-  user      User     @relation(fields: [userId], references: [id])
-  userId    Int
-
-  createdAt DateTime @default(now())
-}
-
+# Запустите приложение для разработки
+npm run dev
+# Приложение будет доступно по адресу http://localhost:3000
 ```
-
-
- ---
-
-   ## 4. API Эндпоинты (Карта Бэкенда)
-
-   ### Аутентификация
-
-   *   `POST /auth/signup` - Регистрация нового пользователя.
-   *   `POST /auth/login` - Вход пользователя, возвращает JWT токен.
-
-   ### Защищенные маршруты (требуют `Authorization: Bearer <token>`)
-
-  *   `GET /profile` - Получение профиля текущего пользователя.
-  *   `POST /activity/exercise` - Запись о выполнении упражнения, прокачка Тела, разблокировка чтения.
-  *   `POST /ocr/upload-and-process` - Загрузка изображения, OCR, генерация квиза.
-  *   `POST /activity/submit-quiz` - Проверка ответа на квиз, прокачка Разума, блокировка чтения.
-
-  ---
-
-   ## 5. Основной Игровой Цикл
-
-   1.  Пользователь на дэшборде. `isReadingUnlocked = true`.
-    2.  Он загружает изображение с текстом (`/ocr/upload-and-process`).
-    3.  Система возвращает квиз.
-    4.  Пользователь отвечает на квиз (`/activity/submit-quiz`).
-    5.  При правильном ответе:
-        *   Начисляется XP для Разума (INT, WIS).
-        *   Проверяется левел-ап.
-        *   В профиле устанавливается `isReadingUnlocked = false`.
-    6.  Интерфейс меняется, показывая "Врата Выносливости".
-    7.  Пользователь выполняет упражнение (`/activity/exercise`).
-    8.  Начисляется XP для Тела (STR, END).
-    9.  В профиле устанавливается `isReadingUnlocked = true`.
-    10. Интерфейс возвращается к возможности загружать изображение. Цикл завершен.
-
-   ---
-
-   ## 6. Как запустить проект локально
-
-   
-
-  1.  **Настройка Бэкенда:**
-        *   `cd backend`
-        *   `npm install`
-        *   Создать файл `.env` по шаблону.
-        *   `npx prisma migrate dev`
-        *   `npm run dev` (запустится на `localhost:3001`)         
-  2.  **Настройка Фронтенда:**
-        *   `cd frontend`
-        *   `npm install`
-        *   `npm run dev` (запустится на `localhost:3000`)
-   

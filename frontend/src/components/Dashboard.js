@@ -1,138 +1,116 @@
-'use client';
+// # Рефакторим Dashboard для использования GameContext и упрощения логики
+// components/Dashboard.js
+"use client";
 
-import { useState, useEffect, useCallback } from 'react';
-import axios from 'axios';
-import { useAuth } from '@/hooks/useAuth';
+import { useState } from 'react';
+import { useAuth } from '../hooks/useAuth';
+import { useGame, GAME_STATES } from '../context/GameContext'; // Импортируем контекст и состояния
+import { calculateXpForLevel } from '../utils/gameLogic';
+
+import TrainingMode from './TrainingMode';
 import ImageUploader from './ImageUploader';
 import EnduranceGate from './EnduranceGate';
+import QuizComponent from './QuizComponent'; // Импортируем новый компонент
 
-export default function Dashboard() {
-  const { logout } = useAuth(); // Получаем функцию logout из хука
-  const [profile, setProfile] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+const Dashboard = () => {
+  // # Получаем данные из AuthContext
+  const { profile, user, logout } = useAuth();
+  // # Получаем состояние и функции управления из GameContext
+  const { gameState, startReading, handleQuizReady, handleCycleComplete } = useGame();
+  
+  // # Локальное состояние для модального окна остается здесь
+  const [isTrainingModalOpen, setIsTrainingModalOpen] = useState(false);
 
-  const fetchProfile = useCallback(async () => {
-    console.log('ЗАПУЩЕНА ФУНКЦИЯ fetchProfile'); // Новый лог
-    setLoading(true); // Включаем загрузку на время запроса
-    const token = localStorage.getItem('solo-mind-token');
-    if (!token) { setLoading(false); return; }
-    try {
-      const response = await axios.get('http://localhost:3001/profile', { headers: { Authorization: `Bearer ${token}` } });
-      console.log('ПОЛУЧЕНЫ СВЕЖИЕ ДАННЫЕ С СЕРВЕРА:', response.data); // Новый лог
-      setProfile(response.data);
-    } catch (err) {
-      setError('Не удалось загрузить данные профиля.');
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  if (!profile || !user) {
+    return <div className="flex items-center justify-center h-screen bg-gray-900 text-white">Загрузка профиля...</div>;
+  }
 
-  // Наша функция для прямого обновления
-  const updateProfileState = (newProfile) => {
-    if (newProfile) { // Добавим проверку на всякий случай
-      console.log('DASHBOARD ОБНОВЛЯЕТСЯ НАПРЯМУЮ С:', newProfile);
-      setProfile(newProfile);
+  // # Вспомогательная функция для рендеринга динамической части
+  const renderGameComponent = () => {
+    switch (gameState) {
+      case GAME_STATES.UPLOADING:
+        // # Передаем функцию из контекста в пропс
+        return <ImageUploader onQuizReady={handleQuizReady} />;
+      case GAME_STATES.QUIZ:
+        // # QuizComponent теперь не требует пропсов, он самодостаточен
+        return <QuizComponent />;
+      case GAME_STATES.EXERCISE:
+        // # Передаем функцию из контекста в пропс
+        return <EnduranceGate onCycleComplete={handleCycleComplete} />;
+      case GAME_STATES.PROFILE:
+      default:
+        // # В состоянии PROFILE ничего не рендерим в этой области
+        return null;
     }
   };
-  
-  useEffect(() => {
-    fetchProfile();
-  }, [fetchProfile]);
 
-  // --- Логика отображения ---
+  const xpToNextLevel = calculateXpForLevel(profile.level);
 
-  // Если профиль уже загружен, выводим его состояние перед отрисовкой
-if (profile) {
-  console.log('DASHBOARD РЕРЕНДЕР С isReadingUnlocked:', profile.isReadingUnlocked); // <-- НАШ ШПИОН №3
-}
-
-  if (loading) {
-    return <p className="text-center text-lg">Загрузка Панели Управления...</p>;
-  }
-
-  if (error) {
-    return <p className="text-center text-lg text-red-500">{error}</p>;
-  }
-
-  if (!profile) {
-    return null; // Если профиля нет, ничего не показываем
-  }
-
-  // Если все хорошо, показываем данные
   return (
-    <div className="w-full max-w-4xl mx-auto p-8 bg-gray-900 rounded-lg shadow-lg">
-      <div className="flex justify-between items-center mb-6">
-      <h1 className="text-3xl font-bold">
-  {/* Если profile.user существует, показываем имя. Если нет - ничего */}
-  Пробужденный: <span className="text-purple-400">{profile.user?.name}</span>
-</h1>
-        <div className="text-xl font-bold">
-          Уровень: <span className="text-purple-400">{profile.level}</span>
+    <div className="min-h-screen bg-gray-900 flex flex-col items-center justify-center p-4 gap-8">
+      {/* --- Статичная часть: Профиль --- */}
+      <div className="p-6 max-w-4xl w-full mx-auto bg-gray-800/50 backdrop-blur-sm text-white rounded-2xl shadow-2xl border border-gray-700">
+        {/* Шапка */}
+        <div className="flex justify-between items-center mb-6 border-b border-gray-700 pb-4">
+          <h1 className="text-3xl font-bold">Профиль: {user.name}</h1>
+          <div className="flex items-center gap-4">
+            <button onClick={() => setIsTrainingModalOpen(true)} className="py-2 px-4 bg-green-600 hover:bg-green-700 rounded-lg font-semibold text-sm transition-colors">Тренировка</button>
+            <button onClick={logout} className="py-2 px-4 bg-red-600 hover:bg-red-700 rounded-lg font-semibold text-sm transition-colors">Выход</button>
+          </div>
+        </div>
+
+        {/* Основной Цикл - теперь это просто кнопка */}
+        {gameState === GAME_STATES.PROFILE && (
+          <div className="text-center bg-gray-900/70 p-6 rounded-lg mb-6">
+            <h2 className="text-xl font-semibold mb-4">Основной Цикл</h2>
+            {/* # Кнопка вызывает функцию из контекста */}
+            <button onClick={startReading} disabled={!profile.isReadingUnlocked} className="px-8 py-3 text-lg font-bold text-white bg-indigo-600 rounded-lg shadow-md hover:bg-indigo-700 transition-transform hover:scale-105 disabled:bg-gray-600 disabled:cursor-not-allowed disabled:hover:scale-100">Начать чтение</button>
+            {!profile.isReadingUnlocked && <p className="text-xs text-yellow-400 mt-2">Чтобы продолжить, завершите физическое упражнение.</p>}
+          </div>
+        )}
+
+        {/* Характеристики и Прогресс */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-2 gap-4">
+            <StatCard name="Сила (STR)" value={profile.statStr} color="text-red-400" />
+            <StatCard name="Выносливость (END)" value={profile.statEnd} color="text-green-400" />
+            <StatCard name="Интеллект (INT)" value={profile.statInt} color="text-blue-400" />
+            <StatCard name="Мудрость (WIS)" value={profile.statWis} color="text-purple-400" />
+          </div>
+          <div className="space-y-4">
+            <div>
+              <p className="text-sm text-gray-300 mb-1">Опыт (XP): {profile.currentXp} / {xpToNextLevel}</p>
+              <progress className="w-full [&::-webkit-progress-bar]:rounded-lg [&::-webkit-progress-value]:rounded-lg [&::-webkit-progress-bar]:bg-gray-700 [&::-webkit-progress-value]:bg-violet-500 [&::-moz-progress-bar]:bg-violet-500" value={profile.currentXp} max={xpToNextLevel}></progress>
+            </div>
+            <div className="bg-gray-900/70 p-3 rounded-lg">
+              <h3 className="font-bold mb-2 text-gray-300">Мышечное Напряжение</h3>
+              {user.muscleTension && Object.keys(user.muscleTension).length > 0 ? (
+                <ul className="text-sm space-y-1">
+                  {Object.entries(user.muscleTension).map(([group, value]) => (
+                    <li key={group}><span className="capitalize font-semibold">{group}:</span> {Math.floor(value)}</li>
+                  ))}
+                </ul>
+              ) : <p className="text-sm text-gray-400">Все мышечные группы восстановлены.</p>}
+            </div>
+          </div>
         </div>
       </div>
 
-      <button
-        onClick={logout}
-        className="py-2 px-4 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-900 transition-colors"
-      >
-        Выйти
-      </button>
+      {/* --- Динамическая часть: Игровой компонент --- */}
+      {renderGameComponent()}
 
-      {/* Полоска опыта */}
-      <div className="mb-8">
-        <div className="flex justify-between mb-1 text-sm">
-          <span>Опыт</span>
-          <span>{profile.currentXp} / {profile.xpToNextLevel}</span>
-        </div>
-        <div className="w-full bg-gray-700 rounded-full h-4">
-          <div
-            className="bg-purple-600 h-4 rounded-full transition-all duration-500"
-            style={{ width: `${(profile.currentXp / profile.xpToNextLevel) * 100}%` }}
-          ></div>
-        </div>
-      </div>
-
-      {/* Сетка характеристик */}
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-6 text-center">
-        <div className="bg-gray-800 p-4 rounded-lg">
-          <p className="text-sm text-gray-400">СИЛА</p>
-          <p className="text-2xl font-bold">{profile.statStr}</p>
-        </div>
-        <div className="bg-gray-800 p-4 rounded-lg">
-          <p className="text-sm text-gray-400">ВЫНОСЛИВОСТЬ</p>
-          <p className="text-2xl font-bold">{profile.statEnd}</p>
-        </div>
-        <div className="bg-gray-800 p-4 rounded-lg">
-          <p className="text-sm text-gray-400">ЛОВКОСТЬ</p>
-          <p className="text-2xl font-bold">{profile.statAgi}</p>
-        </div>
-        <div className="bg-gray-800 p-4 rounded-lg">
-          <p className="text-sm text-gray-400">ИНТЕЛЛЕКТ</p>
-          <p className="text-2xl font-bold">{profile.statInt}</p>
-        </div>
-        <div className="bg-gray-800 p-4 rounded-lg">
-          <p className="text-sm text-gray-400">МУДРОСТЬ</p>
-          <p className="text-2xl font-bold">{profile.statWis}</p>
-        </div>
-        <div className="bg-gray-800 p-4 rounded-lg">
-          <p className="text-sm text-gray-400">ФОКУС</p>
-          <p className="text-2xl font-bold">{profile.statFoc}</p>
-        </div>
-      </div>
-      {/* === ИЗМЕНЯЕМ ЭТОТ БЛОК НА УСЛОВНЫЙ РЕНДЕРИНГ === */}
-<div className="mt-10 flex justify-center">
-  {profile.isReadingUnlocked ? (
-    // Если чтение разблокировано, показываем загрузчик изображений
-    <ImageUploader onProfileUpdate={fetchProfile} />
-  ) : (
-    // Если заблокировано, показываем "Врата Выносливости"
-    <EnduranceGate onProfileUpdate={updateProfileState} />
-  )}
-</div>
-{/* === КОНЕЦ ИЗМЕНЕНИЙ === */}
+      {/* Модальное окно тренировки остается без изменений */}
+      {isTrainingModalOpen && <TrainingMode onClose={() => setIsTrainingModalOpen(false)} />}
     </div>
-
-    
   );
-}
+};
+
+// Вспомогательный компонент для карточки стата (без изменений)
+const StatCard = ({ name, value, color }) => (
+  <div className="p-4 bg-gray-900/70 rounded-lg text-center">
+    <p className={`font-bold ${color}`}>{name}</p>
+    <p className="text-3xl font-light">{value}</p>
+  </div>
+);
+
+export default Dashboard;

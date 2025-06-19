@@ -1,9 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
   output   = "../generated/prisma"
@@ -14,49 +11,62 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// === НАША МОДЕЛЬ ДАННЫХ ===
-
-// Модель Пользователя (для аутентификации)
+// === МОДЕЛЬ ПОЛЬЗОВАТЕЛЯ ===
+// v7.0: Переносим сюда все "накопительные" метрики, от которых напрямую зависят статы.
+// Это делает модель Profile чисто "отображающей", а User - "накопительной".
 model User {
   id        Int      @id @default(autoincrement())
   email     String   @unique
   password  String
-  name      String?  // Знак '?' означает, что поле необязательное
+  name      String?
 
-  // Связь: один User может иметь один Profile
-  profile   Profile?
-  
-  // Связь: один User может иметь много записей в логе
-  activities ActivityLog[]
+  // v7.0: Поля для отслеживания "усилий", от которых растут характеристики.
+  totalMindEffort     Float    @default(0) // Для роста INT. Будем считать как (кол-во символов / 10).
+  totalBodyEffort     Float    @default(0) // Для роста STR. Рассчитывается от EV_Body.
+  quizzesPassed       Int      @default(0) // Для роста WIS. +1 за каждый пройденный квиз.
+  approachesCompleted Int      @default(0) // Для роста END. +1 за каждый выполненный подход.
+
+  // v7.0: Система мышечного восстановления. Храним в JSON.
+  // Пример: { "push": 100, "pull": 20, "legs": 0 }
+  muscleTension       Json     @default("{}")
+
+  // Связи
+  profile             Profile?
+  activities          ActivityLog[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-// Модель Профиля Героя (игровые данные)
+// === МОДЕЛЬ ПРОФИЛЯ ГЕРОЯ ===
+// v7.0: Теперь это "витрина" текущего состояния героя. Все расчеты вынесены.
 model Profile {
   id        Int      @id @default(autoincrement())
   level     Int      @default(1)
-  currentXp Int      @default(0)
-  xpToNextLevel Int  @default(100)
-  
-  statStr   Int      @default(5)
-  statEnd   Int      @default(5)
-  statAgi   Int      @default(5)
-  statInt   Int      @default(5)
-  statWis   Int      @default(5)
-  statFoc   Int      @default(5)
+  currentXp Int      @default(0) // v7.0: Опыт в рамках текущего уровня. Сбрасывается при левел-апе.
 
+  // v7.0: Убираем лишние статы, оставляем только те, что в MASTER_PLAN.
+  // Они больше не растут напрямую, а являются производными от "усилий" в User.
+  statStr   Int      @default(1) // Сила
+  statEnd   Int      @default(1) // Выносливость
+  statInt   Int      @default(1) // Интеллект
+  statWis   Int      @default(1) // Мудрость
+
+  // v7.0: Убираем xpToNextLevel, т.к. он теперь вычисляется на лету.
+  // v7.0: Убираем statAgi и statFoc.
+
+  // v7.0: Этот флаг остается, он идеально подходит для нового игрового цикла.
   isReadingUnlocked Boolean @default(true)
 
   // Связь с пользователем (один-к-одному)
   user      User     @relation(fields: [userId], references: [id])
-  userId    Int      @unique // ID пользователя, к которому привязан этот профиль
+  userId    Int      @unique
 }
 
-// Модель для записи всех действий пользователя
+// === МОДЕЛЬ ЛОГА АКТИВНОСТИ ===
+// v7.0: Оставляем без изменений. Полезна для отладки и будущих фич.
 model ActivityLog {
-  id        Int      @id @default(autoincrement())
+  id           Int      @id @default(autoincrement())
   activityType String
   description  String
   xpGained     Int

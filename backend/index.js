@@ -1,3 +1,5 @@
+//index.js
+
 // --- 1. Импорты ---
 const express = require('express');
 const { PrismaClient } = require('./generated/prisma');  // Импортируем Prisma Client
@@ -10,6 +12,12 @@ const cors = require('cors');
 const multer = require('multer');
 const FormData = require('form-data');
 const fs = require('fs'); // Встроенный модуль Node.js для работы с файлами
+const {
+  calculateXpForLevel,
+  calculateUnityXp,
+  calculateNewStats,
+  getRecommendedReps, // Добавляем импорт этой функции
+} = require('./services/gameMechanicsService');
 
 // --- 2. Инициализация ---
 const app = express();
@@ -135,130 +143,227 @@ app.post('/auth/login', async (req, res) => {
     }
   });
 
-  // === ЗАЩИЩЕННЫЕ МАРШРУТЫ ===
 
-// Этот маршрут будет доступен только авторизованным пользователям
-app.get('/profile', authMiddleware, async (req, res) => {
+// === НОВЫЙ МАРШРУТ: КАЛИБРОВКА ПОЛЬЗОВАТЕЛЯ ===
+  app.post('/auth/calibrate', authMiddleware, async (req, res) => {
     try {
-      // Благодаря authMiddleware, у нас теперь есть req.user.userId
       const userId = req.user.userId;
+      const { answers } = req.body;
   
-      // Ищем профиль пользователя в базе данных, включая все его характеристики
-      const userProfile = await prisma.profile.findUnique({
-        where: {
-          userId: userId,
-        },
-        // Мы также можем включить данные самого пользователя, если они нужны
-        include: {
-          user: {
-            select: {
-              name: true,
-              email: true,
-            },
-          },
+      // Простая логика калибровки
+      let baseStats = { str: 5, end: 5, agi: 5, int: 5, wis: 5, foc: 5 };
+  
+      if (answers.q1 === 'Физическая сила') {
+        baseStats.str += 3;
+        baseStats.end += 2;
+      } else { // Сила разума
+        baseStats.int += 3;
+        baseStats.wis += 2;
+      }
+  
+      if (answers.q2 === 'Взрывная мощь') {
+        baseStats.str += 2;
+        baseStats.agi += 1;
+      } else { // Несгибаемая выносливость
+        baseStats.end += 2;
+        baseStats.foc += 1;
+      }
+  
+      // Обновляем профиль пользователя с новыми статами
+      await prisma.profile.update({
+        where: { userId },
+        data: {
+          statStr: baseStats.str,
+          statEnd: baseStats.end,
+          statAgi: baseStats.agi,
+          statInt: baseStats.int,
+          statWis: baseStats.wis,
+          statFoc: baseStats.foc,
         },
       });
   
-      if (!userProfile) {
-        return res.status(404).json({ message: 'Профиль не найден' });
-      }
-  
-      // Отправляем найденный профиль
-      res.status(200).json(userProfile);
+      res.status(200).json({ message: 'Калибровка успешно завершена!' });
   
     } catch (error) {
-      console.error("Ошибка при получении профиля:", error);
+      console.error("Ошибка калибровки:", error);
       res.status(500).json({ message: 'Что-то пошло не так на сервере' });
     }
   });
 
+  // === ЗАЩИЩЕННЫЕ МАРШРУТЫ ===
 
-// === ЭНДПОИНТ ДЛЯ ИМИТАЦИИ ВЫПОЛНЕНИЯ УПРАЖНЕНИЯ ===
+// === ЗАЩИЩЕННЫЕ МАРШРУТЫ ===
+
+// Этот маршрут будет доступен только авторизованным пользователям
+// v7.0: РЕФАКТОРИНГ - теперь он включает все поля из User и Profile
+app.get('/profile', authMiddleware, async (req, res) => {
+  try {
+    const userId = req.user.userId;
+
+    // Ищем профиль пользователя и включаем ВСЕ данные связанного пользователя
+    const userWithProfile = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+      include: {
+        profile: true, // Включаем все поля из Profile
+      },
+    });
+
+    if (!userWithProfile || !userWithProfile.profile) {
+      return res.status(404).json({ message: 'Профиль не найден' });
+    }
+
+    // v7.0: Формируем более удобный ответ для фронтенда,
+    // где профиль и пользователь разделены, как ожидает useAuth.js
+    const response = {
+      ...userWithProfile.profile, // Все поля профиля (level, xp, stats...)
+      user: { // Вложенный объект пользователя
+          id: userWithProfile.id,
+          name: userWithProfile.name,
+          email: userWithProfile.email,
+          // Самое главное - включаем все новые поля!
+          totalMindEffort: userWithProfile.totalMindEffort,
+          totalBodyEffort: userWithProfile.totalBodyEffort,
+          quizzesPassed: userWithProfile.quizzesPassed,
+          approachesCompleted: userWithProfile.approachesCompleted,
+          muscleTension: userWithProfile.muscleTension,
+      }
+    }
+
+    // Отправляем найденный профиль
+    res.status(200).json(response);
+
+  } catch (error) {
+    console.error("Ошибка при получении профиля (v7.0):", error);
+    res.status(500).json({ message: 'Что-то пошло не так на сервере' });
+  }
+});
+
+
+// v7.0: Временная база данных упражнений. В будущем это можно вынести в отдельную таблицу в БД.
+const exercisesDB = {
+  1: { name: 'Отжимания', multiplier: 1.0, group: 'push' },
+  2: { name: 'Подтягивания', multiplier: 1.5, group: 'pull' },
+  3: { name: 'Приседания', multiplier: 0.8, group: 'legs' },
+  // ... можно добавить другие упражнения
+};
+
+// === ЭНДПОИНТ ДЛЯ ВЫПОЛНЕНИЯ УПРАЖНЕНИЯ (v7.0 РЕФАКТОРИНГ) ===
+// v7.0: Это центральный эндпоинт для прогрессии. Он отвечает за XP, рост статов и левел-апы.
 app.post('/activity/exercise', authMiddleware, async (req, res) => {
-    try {
-      const userId = req.user.userId;
-      const { exerciseName } = req.body; // Ожидаем, что клиент пришлет название упражнения
-  
-      if (!exerciseName) {
-        return res.status(400).json({ message: 'Необходимо указать название упражнения' });
-      }
-  
-      // --- 1. Рассчитываем награду ---
-      // Пока сделаем простую логику. В будущем ее можно усложнить.
-      const xpGained = 25; // Даем 25 очков опыта
-      const strGained = 1; // Даем +1 к силе
-  
-      // --- 2. Находим текущий профиль пользователя ---
-      const currentProfile = await prisma.profile.findUnique({ where: { userId } });
-  
-      if (!currentProfile) {
-        return res.status(404).json({ message: 'Профиль не найден' });
-      }
-  
-      // --- 3. Обновляем профиль и создаем запись в логе в ОДНОЙ ТРАНЗАКЦИИ ---
-      // Это гарантирует, что оба действия либо выполнятся, либо нет.
-      const [updatedProfile] = await prisma.$transaction([
-        // Действие 1: Обновить профиль
-        prisma.profile.update({
-          where: { userId },
-          data: {
-            currentXp: currentProfile.currentXp + xpGained,
-            statStr: currentProfile.statStr + strGained,
-            isReadingUnlocked: true,
-          },
-          include: { // <--- ДОБАВЛЯЕМ ЭТОТ БЛОК
-            user: {
-              select: {
-                name: true,
-              },
-            },
-          },
-        
-        }),
-        // Действие 2: Записать в лог
-        prisma.activityLog.create({
-          data: {
-            userId: userId,
-            activityType: 'exercise_done',
-            description: `Выполнено: ${exerciseName}`,
-            xpGained: xpGained,
-            statAffected: 'STR',
-          },
-        }),
-      ]);
-  
-      // --- 4. Проверяем, не достиг ли пользователь нового уровня ---
-      // Эту логику пока вынесем сюда. В будущем ее можно будет сделать отдельной функцией.
-      let finalProfile = updatedProfile;
-      if (updatedProfile.currentXp >= updatedProfile.xpToNextLevel) {
-        finalProfile = await prisma.profile.update({
-          where: { userId },
-          data: {
-            level: updatedProfile.level + 1,
-            currentXp: updatedProfile.currentXp - updatedProfile.xpToNextLevel, // Переносим излишки
-            xpToNextLevel: Math.floor(updatedProfile.xpToNextLevel * 1.5), // Увеличиваем порог
-          },
-          include: { // <--- ДОБАВЛЯЕМ ЭТОТ БЛОК
-            user: {
-              select: {
-                name: true,
-              },
-            },
-          },
-        
+  try {
+    const userId = req.user.userId;
+    // 1. Получаем новые данные от фронтенда
+    const { reps, exerciseId, isTrainingMode } = req.body;
+
+    if (!reps || !exerciseId) {
+      return res.status(400).json({ message: 'Необходимо указать упражнение и количество повторений.' });
+    }
+
+    const exercise = exercisesDB[exerciseId];
+    if (!exercise) {
+      return res.status(404).json({ message: 'Упражнение не найдено.' });
+    }
+
+    // 2. Получаем актуальные данные пользователя и его профиля
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: { profile: true },
+    });
+
+    if (!user || !user.profile) {
+      return res.status(404).json({ message: 'Профиль не найден.' });
+    }
+
+    // 3. Проверяем минимальный порог выполнения (только для основного цикла)
+    if (!isTrainingMode) {
+      const recommendedReps = getRecommendedReps(user.profile.level, user.profile.statEnd);
+      const minReps = Math.floor(recommendedReps * 0.3);
+      if (reps < minReps) {
+        return res.status(400).json({ 
+          message: `Для разблокировки чтения нужно выполнить хотя бы 30% от рекомендации (${minReps} повторений).` 
         });
       }
-  
-      // --- 5. Отправляем финальный, обновленный профиль ---
-      res.status(200).json({ message: 'Активность записана, статы обновлены!', profile: finalProfile });
-  
-    } catch (error) {
-      console.error("Ошибка при записи активности:", error);
-      res.status(500).json({ message: 'Что-то пошло не так на сервере' });
     }
-  });
 
+    // 4. Расчеты на основе выполненной работы
+    const evBody = reps * exercise.multiplier;
+    
+    // Готовим данные для обновления. Начинаем с накопления "усилий".
+    const userDataToUpdate = {
+      totalBodyEffort: { increment: evBody },
+      approachesCompleted: { increment: 1 },
+    };
+    const profileDataToUpdate = {};
 
+    // 5. Логика для основного цикла (не "Режим Тренировки")
+    if (!isTrainingMode) {
+      // Рассчитываем и добавляем Unity XP
+      const unityXpGained = calculateUnityXp(evBody, user.profile);
+      profileDataToUpdate.currentXp = user.profile.currentXp + unityXpGained;
+      
+      // Разблокируем чтение
+      profileDataToUpdate.isReadingUnlocked = true;
+
+      // Проверяем левел-ап (цикл while на случай нескольких уровней за раз)
+      let currentLevel = user.profile.level;
+      let currentXp = profileDataToUpdate.currentXp;
+      let xpForNextLevel = calculateXpForLevel(currentLevel);
+
+      while (currentXp >= xpForNextLevel) {
+        currentLevel++;
+        currentXp -= xpForNextLevel;
+        xpForNextLevel = calculateXpForLevel(currentLevel);
+      }
+      profileDataToUpdate.level = currentLevel;
+      profileDataToUpdate.currentXp = currentXp;
+    }
+
+    // 6. Обновляем "Напряжение Мышц"
+    const muscleTension = user.muscleTension || {};
+    const trainedGroup = exercise.group;
+    // TODO: В будущем здесь можно добавить логику штрафа к XP, если muscleTension[trainedGroup] > порога
+    muscleTension[trainedGroup] = (muscleTension[trainedGroup] || 0) + evBody;
+    userDataToUpdate.muscleTension = muscleTension;
+
+    // 7. Рассчитываем и обновляем все статы
+    // Создаем временный объект с уже обновленными "усилиями" для корректного расчета
+    const tempUpdatedUser = {
+      ...user,
+      totalBodyEffort: user.totalBodyEffort + evBody,
+      approachesCompleted: user.approachesCompleted + 1,
+    };
+    const newStats = calculateNewStats(tempUpdatedUser);
+    Object.assign(profileDataToUpdate, newStats);
+
+    // 8. Сохраняем все изменения в базу данных в одной транзакции
+    const [updatedUser, updatedProfile] = await prisma.$transaction([
+      prisma.user.update({ where: { id: userId }, data: userDataToUpdate }),
+      prisma.profile.update({ where: { userId }, data: profileDataToUpdate }),
+    ]);
+
+    // 9. v7.0 ФИНАЛЬНОЕ ИСПРАВЛЕНИЕ: Отправляем "очищенный" результат на фронтенд
+    res.status(200).json({
+      message: 'Упражнение выполнено, прогресс сохранен!',
+      updatedProfile: updatedProfile, // Профиль безопасен для отправки
+      updatedUser: {
+        id: updatedUser.id,
+        name: updatedUser.name,
+        email: updatedUser.email,
+        totalMindEffort: updatedUser.totalMindEffort,
+        totalBodyEffort: updatedUser.totalBodyEffort,
+        quizzesPassed: updatedUser.quizzesPassed,
+        approachesCompleted: updatedUser.approachesCompleted,
+        muscleTension: updatedUser.muscleTension,
+      },
+    });
+
+  } catch (error) {
+    console.error("Ошибка в /activity/exercise (v7.0):", error);
+    res.status(500).json({ message: 'Что-то пошло не так на сервере' });
+  }
+});
   // === ЭНДПОИНТ ДЛЯ ГЕНЕРАЦИИ ТЕСТА С ПОМОЩЬЮ AI ===
 app.post('/ai/generate-quiz', authMiddleware, async (req, res) => {
     try {
@@ -329,49 +434,41 @@ app.post('/ai/generate-quiz', authMiddleware, async (req, res) => {
     }
   });
   
-  // === ЭНДПОИНТ ДЛЯ ЗАГРУЗКИ ИЗОБРАЖЕНИЯ И OCR ===
-// Обрати внимание на upload.single('image'), он говорит multer'у ожидать один файл с именем 'image'
+// === ЭНДПОИНТ ДЛЯ ЗАГРУЗКИ ИЗОБРАЖЕНИЯ И OCR (v7.0 РЕФАКТОРИНГ) ===
 app.post('/ocr/upload-and-process', authMiddleware, upload.single('image'), async (req, res) => {
   try {
-    // 1. Проверяем, что файл был загружен
+    const userId = req.user.userId;
+
     if (!req.file) {
       return res.status(400).json({ message: 'Файл не был загружен.' });
     }
 
-    // 2. Готовим данные для отправки в OCR.space
+    // 1. OCR.space
     const formData = new FormData();
-    formData.append('language', 'rus'); // Указываем язык
-    formData.append('isOverlayRequired', 'false');
+    formData.append('language', 'rus');
     formData.append('apikey', process.env.OCR_SPACE_API_KEY);
-    // Добавляем файл из памяти
     formData.append('file', req.file.buffer, { filename: req.file.originalname });
 
-    // 3. Отправляем запрос в OCR.space
-    console.log('Отправка запроса в OCR.space...');
-    const ocrResponse = await axios.post(
-      'https://api.ocr.space/parse/image',
-      formData,
-      { headers: formData.getHeaders() }
-    );
-    console.log('Ответ от OCR.space получен.');
-  
-    if (ocrResponse.data.IsErroredOnProcessing) {
-      return res.status(500).json({ message: 'Ошибка при распознавании текста', details: ocrResponse.data.ErrorMessage });
+    const ocrResponse = await axios.post('https://api.ocr.space/parse/image', formData, { headers: formData.getHeaders() });
+
+    if (ocrResponse.data.IsErroredOnProcessing || !ocrResponse.data.ParsedResults?.[0]?.ParsedText) {
+      return res.status(500).json({ message: 'Ошибка при распознавании текста или текст пуст.', details: ocrResponse.data.ErrorMessage });
     }
-
     const recognizedText = ocrResponse.data.ParsedResults[0].ParsedText;
-    console.log('Текст распознан. Длина:', recognizedText.length);
 
-    // 4. Теперь у нас есть распознанный текст!
-    // Дальше мы можем использовать нашу уже существующую логику для генерации квиза.
-    // (В будущем этот блок можно вынести в отдельную функцию, чтобы не дублировать код)
-    
+    // 2. Обновление "Усилия Разума"
+    const mindEffortGained = recognizedText.length / 10;
+    await prisma.user.update({
+      where: { id: userId },
+      data: { totalMindEffort: { increment: mindEffortGained } },
+    });
+
+    // 3. Groq (Llama 3)
     const prompt = `
       Проанализируй следующий текст. На его основе сгенерируй 1 вопрос для теста с 4 вариантами ответа. 
       Один из вариантов должен быть правильным.
       Верни результат СТРОГО в формате JSON, без каких-либо других слов или объяснений.
       Пример формата: {"question": "Текст вопроса?", "options": ["Вариант А", "Вариант Б", "Вариант В", "Правильный ответ Г"], "correctAnswer": "Правильный ответ Г"}
-
       Текст для анализа:
       ---
       ${recognizedText}
@@ -384,94 +481,81 @@ app.post('/ocr/upload-and-process', authMiddleware, upload.single('image'), asyn
         model: 'llama3-8b-8192',
         messages: [{ role: 'user', content: prompt }],
         temperature: 0.2,
+        // v7.0 ФИНАЛЬНОЕ ИСПРАВЛЕНИЕ: Убираем response_format, так как он может вызывать ошибку.
       },
       { headers: { 'Authorization': `Bearer ${process.env.GROQ_API_KEY}` } }
     );
 
-    const quizJson = JSON.parse(groqResponse.data.choices[0].message.content);
+    // 4. v7.0 ФИНАЛЬНОЕ ИСПРАВЛЕНИЕ: "Умный" парсинг JSON
+    let aiResponseContent = groqResponse.data.choices[0].message.content;
+    
+    // Ищем начало и конец JSON в ответе AI
+    const firstBracket = aiResponseContent.indexOf('{');
+    const lastBracket = aiResponseContent.lastIndexOf('}');
+
+    if (firstBracket === -1 || lastBracket === -1) {
+        throw new Error("AI не вернул валидный JSON объект.");
+    }
+
+    const jsonString = aiResponseContent.substring(firstBracket, lastBracket + 1);
+    const quizJson = JSON.parse(jsonString);
 
     // 5. Отправляем готовый квиз на фронтенд
     res.status(200).json(quizJson);
 
   } catch (error) {
-    console.error("Ошибка в /ocr/upload-and-process:", error.message);
-    res.status(500).json({ message: 'Что-то пошло не так на сервере.' });
+    console.error("Полная ошибка в /ocr/upload-and-process:", error);
+    if (error.response) {
+        console.error("Данные ошибки от внешнего API:", error.response.data);
+    }
+    res.status(500).json({ message: 'Что-то пошло не так на сервере при обработке файла.' });
   }
 });
 
-// === ЭНДПОИНТ ДЛЯ ПРОВЕРКИ ОТВЕТА НА КВИЗ И ПРОКАЧКИ РАЗУМА ===
+// === ЭНДПОИНТ ДЛЯ ПРОВЕРКИ ОТВЕТА НА КВИЗ (v7.0 РЕФАКТОРИНГ) ===
+// v7.0: Этот эндпоинт больше не начисляет XP. Он только проверяет ответ,
+// увеличивает счетчик квизов для роста Мудрости (WIS) и блокирует чтение до выполнения упражнения.
+// === ЭНДПОИНТ ДЛЯ ПРОВЕРКИ ОТВЕТА НА КВИЗ (v7.0 ФИНАЛЬНЫЙ РЕФАКТОРИНГ) ===
 app.post('/activity/submit-quiz', authMiddleware, async (req, res) => {
   try {
     const userId = req.user.userId;
-    // Ожидаем от фронтенда ответ пользователя и правильный ответ для сверки
     const { userAnswer, correctAnswer } = req.body;
 
     if (userAnswer !== correctAnswer) {
-      // Если ответ неверный, просто сообщаем об этом без начисления XP
       return res.status(200).json({ success: false, message: 'Ответ неверный. Попробуйте в следующий раз.' });
     }
 
-    // --- Ответ верный! Начисляем награду ---
-    const xpGained = 35; // Даем больше, чем за упражнения, т.к. это сложнее
-    const intGained = 1;
-    const wisGained = 1;
-
-    const currentProfile = await prisma.profile.findUnique({ where: { userId } });
-
-    if (!currentProfile) {
-      return res.status(404).json({ message: 'Профиль не найден' });
-    }
-
-    // Обновляем профиль и лог в одной транзакции
-    const [updatedProfile] = await prisma.$transaction([
+    const [updatedUser, updatedProfile] = await prisma.$transaction([
+      prisma.user.update({
+        where: { id: userId },
+        data: { quizzesPassed: { increment: 1 } },
+      }),
       prisma.profile.update({
         where: { userId },
-        data: {
-          currentXp: currentProfile.currentXp + xpGained,
-          statInt: currentProfile.statInt + intGained,
-          statWis: currentProfile.statWis + wisGained,
-          isReadingUnlocked: false,
-        },
-        include: { // <--- ДОБАВЛЯЕМ ЭТОТ БЛОК
-          user: {
-            select: {
-              name: true,
-            },
-          },
-        },
-      }),
-      prisma.activityLog.create({
-        data: {
-          userId: userId,
-          activityType: 'quiz_passed',
-          description: 'Пройден тест на знания',
-          xpGained: xpGained,
-          statAffected: 'INT/WIS',
-        },
+        data: { isReadingUnlocked: false },
       }),
     ]);
 
-    // Проверяем левел-ап (эту логику точно нужно будет вынести в отдельную функцию в будущем)
-    let finalProfile = updatedProfile;
-    if (updatedProfile.currentXp >= updatedProfile.xpToNextLevel) {
-      finalProfile = await prisma.profile.update({
-        where: { userId },
-        data: {
-          level: updatedProfile.level + 1,
-          currentXp: updatedProfile.currentXp - updatedProfile.xpToNextLevel,
-          xpToNextLevel: Math.floor(updatedProfile.xpToNextLevel * 1.5),
-        },
-      });
-    }
-
-    res.status(200).json({ 
-      success: true, 
-      message: `Верно! +${xpGained} XP!`, 
-      profile: finalProfile 
+    // v7.0 ФИНАЛЬНОЕ ИСПРАВЛЕНИЕ: Отправляем "очищенный" объект пользователя, без пароля и лишних полей.
+    // Это безопасно и предотвращает ошибки сериализации.
+    res.status(200).json({
+      success: true,
+      message: 'Верно! Знания усвоены. Теперь выполните физическое упражнение.',
+      updatedProfile: updatedProfile, // Профиль не содержит секретных данных, его можно отправлять целиком.
+      updatedUser: {
+        id: updatedUser.id,
+        name: updatedUser.name,
+        email: updatedUser.email,
+        totalMindEffort: updatedUser.totalMindEffort,
+        totalBodyEffort: updatedUser.totalBodyEffort,
+        quizzesPassed: updatedUser.quizzesPassed,
+        approachesCompleted: updatedUser.approachesCompleted,
+        muscleTension: updatedUser.muscleTension,
+      },
     });
 
   } catch (error) {
-    console.error("Ошибка в /activity/submit-quiz:", error);
+    console.error("Ошибка в /activity/submit-quiz (v7.0):", error);
     res.status(500).json({ message: 'Что-то пошло не так на сервере' });
   }
 });

@@ -1,114 +1,67 @@
-'use client'; // Эта директива ОБЯЗАТЕЛЬНА для компонентов с интерактивом (кнопки, поля ввода)
+// components/LoginForm.js
+"use client";
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import axios from 'axios';
-import Link from 'next/link'
+import { useAuth } from '../hooks/useAuth';
+import { useRouter } from 'next/navigation'; // Используем новый роутер из Next.js 13+
 
-export default function LoginForm() {
-  // Создаем "состояния" для хранения того, что вводит пользователь
-  const router = useRouter();
+const LoginForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState(''); // Для хранения текста ошибки
-  const [loading, setLoading] = useState(false); // Для отслеживания состояния загрузки
+  const [error, setError] = useState('');
+  const auth = useAuth();
+  const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(''); // Сбрасываем старые ошибки
-    setLoading(true); // Включаем состояние загрузки
-  
+    setError('');
     try {
-      // Отправляем POST-запрос на наш бэкенд
-      const response = await axios.post('http://localhost:3001/auth/login', {
-        email: email,
-        password: password,
-      });
-  
-      // Если запрос успешен, бэкенд вернет токен
-      console.log('Успешный вход!', response.data);
-      const { token } = response.data;
-  
-      // Сохраняем токен в localStorage браузера.
-      // Это позволит нам "помнить" пользователя между перезагрузками страницы.
-      localStorage.setItem('solo-mind-token', token);
-  
-      router.push('/dashboard'); // <--- ДОБАВЛЯЕМ РЕДИРЕКТ НА ДЭШБОРД
-  
+      // v7.0 ИСПРАВЛЕНИЕ: Делегируем всю логику входа нашему хуку
+      await auth.login(email, password);
+      
+      // Если логин прошел успешно (ошибки не было), перенаправляем на дашборд
+      router.push('/dashboard');
+
     } catch (err) {
-      // Если бэкенд вернул ошибку (401, 500 и т.д.)
-      console.error('Ошибка входа:', err.response?.data?.message || 'Что-то пошло не так');
-      setError(err.response?.data?.message || 'Не удалось подключиться к серверу');
-    } finally {
-      // Этот блок выполнится в любом случае (успех или ошибка)
-      setLoading(false); // Выключаем состояние загрузки
+      // Если хук auth.login выбросил ошибку, мы ее здесь ловим
+      setError(err.response?.data?.message || 'Произошла ошибка при входе');
+      console.error(err); // Логируем ошибку для отладки
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 max-w-sm mx-auto mt-20 p-8 bg-gray-900 rounded-lg shadow-lg">
-      <div>
-        <label htmlFor="email" className="block text-sm font-medium text-gray-300">
-          Email
-        </label>
-        <div className="mt-1">
+    <div className="w-full max-w-md p-8 space-y-6 bg-gray-800 rounded-lg shadow-md">
+      <h1 className="text-2xl font-bold text-center text-white">Вход в Solo Mind</h1>
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div>
+          <label /* ... */ >Email</label>
           <input
-            id="email"
-            name="email"
             type="email"
-            required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white focus:ring-purple-500 focus:border-purple-500"
+            className="..."
+            required
           />
         </div>
-      </div>
-
-      <div>
-        <label htmlFor="password" className="block text-sm font-medium text-gray-300">
-          Пароль
-        </label>
-        <div className="mt-1">
+        <div>
+          <label /* ... */ >Пароль</label>
           <input
-            id="password"
-            name="password"
             type="password"
-            required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white focus:ring-purple-500 focus:border-purple-500"
+            className="..."
+            required
           />
         </div>
-      </div>
-
-      <div>
-
-{/* Блок для отображения ошибки */}
-{error && (
-  <div>
-    <p className="text-sm text-red-500 text-center">{error}</p>
-  </div>
-)}
-
-<div>
-  <button
-    type="submit"
-    disabled={loading} // Блокируем кнопку во время загрузки
-    className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:bg-purple-400 disabled:cursor-not-allowed"
-  >
-    {loading ? 'Вход...' : 'Войти'} {/* Меняем текст кнопки во время загрузки */}
-  </button>
-</div>
-
-<div className="text-center mt-4">
-  <p className="text-sm text-gray-400">
-    Еще не пробудился?{' '}
-    <Link href="/signup" className="font-medium text-purple-400 hover:text-purple-300">
-      Создать героя
-    </Link>
-  </p>
-</div>
-      </div>
-    </form>
+        {error && <p className="text-sm text-red-500 text-center">{error}</p>}
+        <div>
+          <button type="submit" className="...">
+            Войти
+          </button>
+        </div>
+      </form>
+    </div>
   );
-}
+};
+
+export default LoginForm;
