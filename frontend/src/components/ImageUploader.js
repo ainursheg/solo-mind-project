@@ -2,14 +2,12 @@
 "use client";
 
 import { useState } from 'react';
-import { useAuth } from '../hooks/useAuth';
 import { useGame } from '../context/GameContext'; // Импортируем, чтобы получить onQuizReady
-import axios from 'axios';
+import { api } from '@/services/api';
 
-const API_URL = 'http://localhost:3001';
+
 
 const ImageUploader = () => {
-  const { token } = useAuth();
   const { handleQuizReady } = useGame(); // Получаем функцию из контекста
   const [file, setFile] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -29,10 +27,9 @@ const ImageUploader = () => {
     setIsLoading(true);
     const formData = new FormData();
     formData.append('image', file);
+
     try {
-      const response = await axios.post(`${API_URL}/ocr/upload-and-process`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${token}` },
-      });
+      const response = await api.uploadImage(formData);
       handleQuizReady(response.data); // Используем функцию из контекста
     } catch (err) {
       setError(err.response?.data?.message || 'Произошла ошибка при обработке изображения.');

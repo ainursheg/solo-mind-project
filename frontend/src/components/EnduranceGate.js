@@ -1,26 +1,41 @@
 // components/EnduranceGate.js
 "use client";
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect  } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { useGame } from '@/context/GameContext';
 import { getRecommendedReps } from '../utils/gameLogic';
-import axios from 'axios';
+import { api } from '@/services/api';
 
-const exercisesDB = [
-  { id: 1, name: 'Отжимания', group: 'push' },
-  { id: 2, name: 'Подтягивания', group: 'pull' },
-  { id: 3, name: 'Приседания', group: 'legs' },
-];
-const API_URL = 'http://localhost:3001';
 
 const EnduranceGate = () => {
-  const { profile, token, updateUserAndProfile } = useAuth();
+  const { profile, updateUserAndProfile } = useAuth();
   const { handleCycleComplete } = useGame();
-  const [exerciseId, setExerciseId] = useState(exercisesDB[0].id);
+  
+  const [exercises, setExercises] = useState([]);
+  const [exerciseId, setExerciseId] = useState('');
+
   const [reps, setReps] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+
+  // Загружаем упражнения при монтировании компонента
+  useEffect(() => {
+    const fetchExercises = async () => {
+      try {
+        const response = await api.getExercises();
+        setExercises(response.data);
+        // Устанавливаем начальное значение для select, если данные пришли
+        if (response.data.length > 0) {
+          setExerciseId(response.data[0].id);
+        }
+      } catch (error) {
+        console.error("Ошибка загрузки упражнений:", error);
+        setError("Не удалось загрузить список упражнений.");
+      }
+    };
+    fetchExercises();
+  }, []); // Пустой массив зависимостей для выполнения один раз
 
   const recommendedReps = useMemo(() => (profile ? getRecommendedReps(profile.level, profile.statEnd) : 0), [profile]);
   const minReps = Math.floor(recommendedReps * 0.3);
@@ -30,11 +45,11 @@ const EnduranceGate = () => {
     if (!reps || reps <= 0) return;
     setIsLoading(true);
     try {
-      const response = await axios.post(
-        `${API_URL}/activity/exercise`,
-        { exerciseId: parseInt(exerciseId), reps: parseInt(reps), isTrainingMode: false },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const response = await api.submitExercise({
+        exerciseId: parseInt(exerciseId),
+        reps: parseInt(reps),
+        isTrainingMode: false
+      });
       updateUserAndProfile(response.data);
       handleCycleComplete();
     } catch (err) {
@@ -56,7 +71,7 @@ const EnduranceGate = () => {
           <label htmlFor="exercise" className="block text-sm font-medium text-text-secondary">Выберите упражнение</label>
           {/* --- ИЗМЕНЕННЫЕ СТИЛИ ДЛЯ SELECT --- */}
           <select id="exercise" value={exerciseId} onChange={(e) => setExerciseId(e.target.value)} className="mt-1 block w-full px-3 py-2 bg-background-primary border border-text-secondary/30 rounded-md focus:ring-accent-primary focus:border-accent-primary transition">
-            {exercisesDB.map(ex => <option key={ex.id} value={ex.id}>{ex.name}</option>)}
+            {exercises.map(ex => <option key={ex.id} value={ex.id}>{ex.name}</option>)}
           </select>
         </div>
         <div>

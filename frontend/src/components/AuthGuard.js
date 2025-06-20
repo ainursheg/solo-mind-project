@@ -4,9 +4,7 @@
 import { useAuth } from '../hooks/useAuth';
 import { useRouter, usePathname } from 'next/navigation';
 import { useEffect } from 'react';
-
-const PROTECTED_ROUTES = ['/dashboard'];
-const PUBLIC_ONLY_ROUTES = ['/login', '/signup', '/'];
+import { PROTECTED_ROUTES, PUBLIC_ONLY_ROUTES } from '@/utils/constants';
 
 const AuthGuard = ({ children }) => {
   const { token, loading } = useAuth();

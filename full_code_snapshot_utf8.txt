@@ -1,0 +1,2418 @@
+﻿Полный код проекта Solo Mind на 06/19/2025 22:56:32.
+
+
+--- START OF FILE: .gitignore ---
+# РџР°РїРєРё СЃ Р·Р°РІРёСЃРёРјРѕСЃС‚СЏРјРё
+/node_modules
+/frontend/node_modules
+/backend/node_modules
+
+# РљРµС€ Рё Р±РёР»Рґ-Р°СЂС‚РµС„Р°РєС‚С‹ Next.js
+/frontend/.next
+
+# РЎРµРєСЂРµС‚РЅС‹Рµ С„Р°Р№Р»С‹
+*.env
+/frontend/.env.local
+/backend/.env
+
+# Р›РѕРіРё
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# РЎРµРєСЂРµС‚РЅС‹Рµ РјР°С‚РµСЂРёР°Р»С‹
+/xfiles
+
+--- END OF FILE: .gitignore ---
+
+
+--- START OF FILE: README.md ---
+
+# РџСЂРѕРµРєС‚ "Solo Mind" (v0.4.0 - UI Refactor)
+
+**Solo Mind** вЂ” СЌС‚Рѕ Full-Stack РїСЂРёР»РѕР¶РµРЅРёРµ РґР»СЏ РіРµР№РјРёС„РёРєР°С†РёРё СЃР°РјРѕСЂР°Р·РІРёС‚РёСЏ, РІРґРѕС…РЅРѕРІР»РµРЅРЅРѕРµ РјР°РЅС…РІРѕР№ "Solo Leveling". РџСЂРёР»РѕР¶РµРЅРёРµ РїРѕРјРѕРіР°РµС‚ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏРј РїСЂРµРІСЂР°С‚РёС‚СЊ СЂСѓС‚РёРЅРЅС‹Рµ РґРµР№СЃС‚РІРёСЏ РїРѕ СѓР»СѓС‡С€РµРЅРёСЋ С„РёР·РёС‡РµСЃРєРёС… Рё РёРЅС‚РµР»Р»РµРєС‚СѓР°Р»СЊРЅС‹С… РЅР°РІС‹РєРѕРІ РІ СѓРІР»РµРєР°С‚РµР»СЊРЅС‹Р№ РёРіСЂРѕРІРѕР№ РїСЂРѕС†РµСЃСЃ СЃ РїСЂРѕРєР°С‡РєРѕР№ РїРµСЂСЃРѕРЅР°Р¶Р°.
+
+---
+
+## 1. РљР»СЋС‡РµРІС‹Рµ РћСЃРѕР±РµРЅРЅРѕСЃС‚Рё (v0.4.0)
+
+Р­С‚Р° РІРµСЂСЃРёСЏ РІРєР»СЋС‡Р°РµС‚ РІ СЃРµР±СЏ РїРѕР»РЅС‹Р№ СЂРµС„Р°РєС‚РѕСЂРёРЅРі Рё СѓР»СѓС‡С€РµРЅРёРµ UI/UX:
+
+*   **РўРµРјР°С‚РёС‡РµСЃРєРёР№ Р”РёР·Р°Р№РЅ:** Р РµР°Р»РёР·РѕРІР°РЅР° С‚РµРјРЅР°СЏ С‚РµРјР° РІ "РіРµР№РјРµСЂСЃРєРѕР№" СЃС‚РёР»РёСЃС‚РёРєРµ СЃ РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРµРј РєР°СЃС‚РѕРјРЅРѕР№ РїР°Р»РёС‚СЂС‹.
+*   **РљР°СЃС‚РѕРјРЅС‹Рµ РЁСЂРёС„С‚С‹:** РџРѕРґРєР»СЋС‡РµРЅС‹ Рё РёСЃРїРѕР»СЊР·СѓСЋС‚СЃСЏ РґРІР° С€СЂРёС„С‚Р° (`Orbitron` РґР»СЏ Р·Р°РіРѕР»РѕРІРєРѕРІ Рё `Poppins` РґР»СЏ РѕСЃРЅРѕРІРЅРѕРіРѕ С‚РµРєСЃС‚Р°) РґР»СЏ СЃРѕР·РґР°РЅРёСЏ СѓРЅРёРєР°Р»СЊРЅРѕРіРѕ РІРёРґР°.
+*   **РРЅС‚РµСЂР°РєС‚РёРІРЅРѕСЃС‚СЊ:** Р’СЃРµ РєРЅРѕРїРєРё Рё РёРЅС‚РµСЂР°РєС‚РёРІРЅС‹Рµ СЌР»РµРјРµРЅС‚С‹ РїРѕР»СѓС‡РёР»Рё СЌС„С„РµРєС‚С‹ РїСЂРё РЅР°РІРµРґРµРЅРёРё Рё РЅР°Р¶Р°С‚РёРё (СЃРІРµС‡РµРЅРёРµ, СЃРјРµС‰РµРЅРёРµ), С‡С‚Рѕ РґРµР»Р°РµС‚ РёРЅС‚РµСЂС„РµР№СЃ Р±РѕР»РµРµ Р¶РёРІС‹Рј.
+*   **РџР»Р°РІРЅС‹Рµ РђРЅРёРјР°С†РёРё:** РљРѕРјРїРѕРЅРµРЅС‚С‹ РёРіСЂРѕРІРѕРіРѕ С†РёРєР»Р° РїРѕСЏРІР»СЏСЋС‚СЃСЏ РЅР° СЌРєСЂР°РЅРµ СЃ РїР»Р°РІРЅРѕР№ Р°РЅРёРјР°С†РёРµР№, СѓР»СѓС‡С€Р°СЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊСЃРєРёР№ РѕРїС‹С‚.
+
+
+---
+
+## 2. РўРµС…РЅРѕР»РѕРіРёС‡РµСЃРєРёР№ РЎС‚РµРє
+
+*   **Frontend:** React, Next.js (App Router), **Tailwind CSS v4**, Axios
+*   **Backend:** Node.js, Express.js
+*   **Р‘Р°Р·Р° РґР°РЅРЅС‹С…:** PostgreSQL СЃ Prisma ORM
+*   **Р’РЅРµС€РЅРёРµ API:**
+    *   **OCR.space:** РґР»СЏ СЂР°СЃРїРѕР·РЅР°РІР°РЅРёСЏ С‚РµРєСЃС‚Р° СЃ РёР·РѕР±СЂР°Р¶РµРЅРёР№.
+    *   **Groq (Llama 3):** РґР»СЏ РіРµРЅРµСЂР°С†РёРё РєРІРёР·РѕРІ РЅР° РѕСЃРЅРѕРІРµ СЂР°СЃРїРѕР·РЅР°РЅРЅРѕРіРѕ С‚РµРєСЃС‚Р°.
+
+---
+
+## 3. РЎС‚СЂСѓРєС‚СѓСЂР° РџСЂРѕРµРєС‚Р°
+
+РџСЂРѕРµРєС‚ РїСЂРµРґСЃС‚Р°РІР»СЏРµС‚ СЃРѕР±РѕР№ РјРѕРЅРѕСЂРµРїРѕР·РёС‚РѕСЂРёР№ СЃ РґРІСѓРјСЏ РѕСЃРЅРѕРІРЅС‹РјРё С‡Р°СЃС‚СЏРјРё: `backend` Рё `frontend`.
+
+```
+solo-mind-project/
+в”њв”Ђв”Ђ backend/          # Р‘СЌРєРµРЅРґ-СЃРµСЂРІРµСЂ РЅР° Express
+в”‚   в”њв”Ђв”Ђ prisma/       # РЎС…РµРјР° Рё РјРёРіСЂР°С†РёРё Р±Р°Р·С‹ РґР°РЅРЅС‹С…
+в”‚   в””в”Ђв”Ђ index.js      # Р“Р»Р°РІРЅС‹Р№ С„Р°Р№Р» СЃРµСЂРІРµСЂР°
+в”њв”Ђв”Ђ frontend/         # Р¤СЂРѕРЅС‚РµРЅРґ-РїСЂРёР»РѕР¶РµРЅРёРµ РЅР° Next.js
+в”‚   в””в”Ђв”Ђ src/
+в”‚       в”њв”Ђв”Ђ app/      # РЎС‚СЂР°РЅРёС†С‹ Рё СЂРѕСѓС‚РёРЅРі (App Router)
+в”‚       в”њв”Ђв”Ђ components/ # РџРµСЂРµРёСЃРїРѕР»СЊР·СѓРµРјС‹Рµ React-РєРѕРјРїРѕРЅРµРЅС‚С‹
+в”‚       в”њв”Ђв”Ђ context/  # Р“Р»РѕР±Р°Р»СЊРЅС‹Рµ РєРѕРЅС‚РµРєСЃС‚С‹ (GameContext.js)
+в”‚       в””в”Ђв”Ђ hooks/    # React-С…СѓРєРё (useAuth.js)
+в””в”Ђв”Ђ README.md         # Р­С‚РѕС‚ С„Р°Р№Р»```
+
+---
+
+## 4. РњРѕРґРµР»СЊ Р”Р°РЅРЅС‹С… (РђСЂС…РёС‚РµРєС‚СѓСЂР° "РќР°РєРѕРїРёС‚РµР»СЊ / Р’РёС‚СЂРёРЅР°")
+
+РњС‹ РёСЃРїРѕР»СЊР·СѓРµРј Р°СЂС…РёС‚РµРєС‚СѓСЂРЅС‹Р№ РїР°С‚С‚РµСЂРЅ, СЂР°Р·РґРµР»СЏСЋС‰РёР№ "СЃС‹СЂС‹Рµ" РґР°РЅРЅС‹Рµ Рё "РѕС‚РѕР±СЂР°Р¶Р°РµРјРѕРµ" СЃРѕСЃС‚РѕСЏРЅРёРµ.
+
+*   **`User` (РќР°РєРѕРїРёС‚РµР»СЊ):** РҐСЂР°РЅРёС‚ РІРµС‡РЅРѕ РЅР°РєР°РїР»РёРІР°СЋС‰РёРµСЃСЏ РјРµС‚СЂРёРєРё СѓСЃРёР»РёР№ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ (`totalMindEffort`, `totalBodyEffort`, `quizzesPassed` Рё С‚.Рґ.).
+*   **`Profile` (Р’РёС‚СЂРёРЅР°):** РҐСЂР°РЅРёС‚ РІС‹С‡РёСЃР»СЏРµРјРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ РїРµСЂСЃРѕРЅР°Р¶Р°, РєРѕС‚РѕСЂРѕРµ РІРёРґРёС‚ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ (`level`, `currentXp`, СЃС‚Р°С‚С‹ `STR`, `END`, `INT`, `WIS`).
+
+---
+
+## 5. РћСЃРЅРѕРІРЅРѕР№ РРіСЂРѕРІРѕР№ Р¦РёРєР»
+
+РРіСЂРѕРІРѕР№ РїСЂРѕС†РµСЃСЃ РїРѕСЃС‚СЂРѕРµРЅ РЅР° С‚СЂРµС…С„Р°Р·РЅРѕРј С†РёРєР»Рµ, СѓРїСЂР°РІР»СЏРµРјРѕРј С„Р»Р°РіРѕРј `isReadingUnlocked`.
+
+1.  **Р§С‚РµРЅРёРµ Рё Р“РµРЅРµСЂР°С†РёСЏ РљРІРёР·Р°:** РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ Р·Р°РіСЂСѓР¶Р°РµС‚ РёР·РѕР±СЂР°Р¶РµРЅРёРµ, Р±СЌРєРµРЅРґ РіРµРЅРµСЂРёСЂСѓРµС‚ РєРІРёР·.
+2.  **РџСЂРѕС…РѕР¶РґРµРЅРёРµ РљРІРёР·Р°:** РџСЂРё РїСЂР°РІРёР»СЊРЅРѕРј РѕС‚РІРµС‚Рµ Р±СЌРєРµРЅРґ Р±Р»РѕРєРёСЂСѓРµС‚ С‡С‚РµРЅРёРµ (`isReadingUnlocked = false`).
+3.  **Р¤РёР·РёС‡РµСЃРєРѕРµ РЈРїСЂР°Р¶РЅРµРЅРёРµ:** РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ РІС‹РїРѕР»РЅСЏРµС‚ СѓРїСЂР°Р¶РЅРµРЅРёРµ, Р±СЌРєРµРЅРґ РЅР°С‡РёСЃР»СЏРµС‚ РѕРїС‹С‚, РѕР±РЅРѕРІР»СЏРµС‚ СЃС‚Р°С‚С‹ Рё СЂР°Р·Р±Р»РѕРєРёСЂСѓРµС‚ С‡С‚РµРЅРёРµ (`isReadingUnlocked = true`). Р¦РёРєР» Р·Р°РІРµСЂС€РµРЅ.
+
+---
+
+## 6. РљР°Рє Р·Р°РїСѓСЃС‚РёС‚СЊ РїСЂРѕРµРєС‚ Р»РѕРєР°Р»СЊРЅРѕ
+
+### 1. РќР°СЃС‚СЂРѕР№РєР° Р‘СЌРєРµРЅРґР°:
+```bash
+# РџРµСЂРµР№РґРёС‚Рµ РІ РїР°РїРєСѓ Р±СЌРєРµРЅРґР°
+cd backend
+
+# РЈСЃС‚Р°РЅРѕРІРёС‚Рµ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё
+npm install
+
+# РЎРѕР·РґР°Р№С‚Рµ С„Р°Р№Р» .env РїРѕ РїСЂРёРјРµСЂСѓ .env.example Рё Р·Р°РїРѕР»РЅРёС‚Рµ РµРіРѕ
+# (DATABASE_URL, JWT_SECRET, OCR_SPACE_API_KEY, GROQ_API_KEY)
+
+# РџСЂРёРјРµРЅРёС‚Рµ РјРёРіСЂР°С†РёРё Р±Р°Р·С‹ РґР°РЅРЅС‹С…
+npx prisma migrate dev
+
+# Р—Р°РїСѓСЃС‚РёС‚Рµ СЃРµСЂРІРµСЂ СЂР°Р·СЂР°Р±РѕС‚РєРё
+npm run dev
+# РЎРµСЂРІРµСЂ Р±СѓРґРµС‚ РґРѕСЃС‚СѓРїРµРЅ РїРѕ Р°РґСЂРµСЃСѓ http://localhost:3001
+```
+
+### 2. РќР°СЃС‚СЂРѕР№РєР° Р¤СЂРѕРЅС‚РµРЅРґР°:
+```bash
+# РџРµСЂРµР№РґРёС‚Рµ РІ РїР°РїРєСѓ С„СЂРѕРЅС‚РµРЅРґР°
+cd frontend
+
+# РЈСЃС‚Р°РЅРѕРІРёС‚Рµ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё
+npm install
+
+# Р—Р°РїСѓСЃС‚РёС‚Рµ РїСЂРёР»РѕР¶РµРЅРёРµ РґР»СЏ СЂР°Р·СЂР°Р±РѕС‚РєРё
+npm run dev
+# РџСЂРёР»РѕР¶РµРЅРёРµ Р±СѓРґРµС‚ РґРѕСЃС‚СѓРїРЅРѕ РїРѕ Р°РґСЂРµСЃСѓ http://localhost:3000
+```
+```
+
+
+--- END OF FILE: README.md ---
+
+
+--- START OF FILE: backend/.gitignore ---
+node_modules
+# Keep environment variables out of version control
+.env
+
+/generated/prisma
+
+
+--- END OF FILE: backend/.gitignore ---
+
+
+--- START OF FILE: backend/index.js ---
+//index.js
+
+// --- 1. РРјРїРѕСЂС‚С‹ ---
+const express = require('express');
+const { PrismaClient } = require('./generated/prisma');  // РРјРїРѕСЂС‚РёСЂСѓРµРј Prisma Client
+const bcrypt = require('bcryptjs'); // РРјРїРѕСЂС‚РёСЂСѓРµРј bcrypt РґР»СЏ С…РµС€РёСЂРѕРІР°РЅРёСЏ
+require('dotenv').config(); // Р—Р°РіСЂСѓР¶Р°РµС‚ РїРµСЂРµРјРµРЅРЅС‹Рµ РёР· .env С„Р°Р№Р»Р°
+const jwt = require('jsonwebtoken');
+const authMiddleware = require('./middleware/auth');
+const axios = require('axios');
+const cors = require('cors'); 
+const multer = require('multer');
+const FormData = require('form-data');
+const fs = require('fs'); // Р’СЃС‚СЂРѕРµРЅРЅС‹Р№ РјРѕРґСѓР»СЊ Node.js РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ С„Р°Р№Р»Р°РјРё
+const {
+  calculateXpForLevel,
+  calculateUnityXp,
+  calculateNewStats,
+  getRecommendedReps, // Р”РѕР±Р°РІР»СЏРµРј РёРјРїРѕСЂС‚ СЌС‚РѕР№ С„СѓРЅРєС†РёРё
+} = require('./services/gameMechanicsService');
+
+// --- 2. РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ ---
+const app = express();
+const prisma = new PrismaClient(); // РЎРѕР·РґР°РµРј СЌРєР·РµРјРїР»СЏСЂ Prisma Client
+const PORT = 3001;
+const upload = multer({ storage: multer.memoryStorage() });
+
+// --- 3. Middleware ---
+// Р­С‚Рѕ РѕС‡РµРЅСЊ РІР°Р¶РЅС‹Р№ middleware. РћРЅ РіРѕРІРѕСЂРёС‚ Express'Сѓ "РїРѕРЅРёРјР°С‚СЊ" JSON.
+// Р‘РµР· РЅРµРіРѕ РјС‹ РЅРµ СЃРјРѕР¶РµРј РїСЂРѕС‡РёС‚Р°С‚СЊ РґР°РЅРЅС‹Рµ, РєРѕС‚РѕСЂС‹Рµ РїСЂРёС…РѕРґСЏС‚ РѕС‚ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ.
+app.use(cors());
+app.use(express.json());
+
+// --- 4. РњР°СЂС€СЂСѓС‚С‹ (API Endpoints) ---
+
+// РќР°С€ СЃС‚Р°СЂС‹Р№ РјР°СЂС€СЂСѓС‚ РґР»СЏ РїСЂРѕРІРµСЂРєРё, С‡С‚Рѕ СЃРµСЂРІРµСЂ Р¶РёРІ
+app.get('/', (req, res) => {
+  res.send('РЎРёСЃС‚РµРјР° "Solo Mind" Р·Р°РїСѓС‰РµРЅР°. Р”РѕР±СЂРѕ РїРѕР¶Р°Р»РѕРІР°С‚СЊ, РџСЂРѕР±СѓР¶РґРµРЅРЅС‹Р№.');
+});
+
+// === РќРћР’Р«Р™ РњРђР РЁР РЈРў: Р Р•Р“РРЎРўР РђР¦РРЇ РџРћР›Р¬Р—РћР’РђРўР•Р›РЇ ===
+// РњС‹ РёСЃРїРѕР»СЊР·СѓРµРј app.post, С‚Р°Рє РєР°Рє РєР»РёРµРЅС‚ Р±СѓРґРµС‚ РћРўРџР РђР’Р›РЇРўР¬ (POST) РЅР°Рј РґР°РЅРЅС‹Рµ.
+app.post('/auth/signup', async (req, res) => {
+  // РСЃРїРѕР»СЊР·СѓРµРј try...catch РґР»СЏ РѕР±СЂР°Р±РѕС‚РєРё РІРѕР·РјРѕР¶РЅС‹С… РѕС€РёР±РѕРє
+  try {
+    // 1. РџРѕР»СѓС‡Р°РµРј РґР°РЅРЅС‹Рµ РёР· "С‚РµР»Р°" Р·Р°РїСЂРѕСЃР° (req.body)
+    const { email, password, name } = req.body;
+
+    // 2. РџСЂРѕСЃС‚Р°СЏ РІР°Р»РёРґР°С†РёСЏ: РїСЂРѕРІРµСЂСЏРµРј, С‡С‚Рѕ РІСЃРµ РїРѕР»СЏ РїСЂРёС€Р»Рё
+    if (!email || !password || !name) {
+      // Р•СЃР»Рё С‡РµРіРѕ-С‚Рѕ РЅРµ С…РІР°С‚Р°РµС‚, РѕС‚РїСЂР°РІР»СЏРµРј РѕС€РёР±РєСѓ 400 (Bad Request)
+      return res.status(400).json({ message: 'РџРѕР¶Р°Р»СѓР№СЃС‚Р°, Р·Р°РїРѕР»РЅРёС‚Рµ РІСЃРµ РїРѕР»СЏ' });
+    }
+
+    // 3. РџСЂРѕРІРµСЂСЏРµРј, РЅРµ Р·Р°РЅСЏС‚ Р»Рё СѓР¶Рµ СЌС‚РѕС‚ email
+    const existingUser = await prisma.user.findUnique({
+      where: { email: email },
+    });
+
+    if (existingUser) {
+      return res.status(400).json({ message: 'РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ СЃ С‚Р°РєРёРј email СѓР¶Рµ СЃСѓС‰РµСЃС‚РІСѓРµС‚' });
+    }
+
+    // 4. РҐРµС€РёСЂСѓРµРј РїР°СЂРѕР»СЊ
+    const hashedPassword = await bcrypt.hash(password, 10); // 10 - СЌС‚Рѕ "СЃРѕР»СЊ", СЃР»РѕР¶РЅРѕСЃС‚СЊ С€РёС„СЂРѕРІР°РЅРёСЏ
+
+    // 5. РЎРѕР·РґР°РµРј РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ Рё РµРіРѕ РїСЂРѕС„РёР»СЊ РІ РћР”РќРћР™ С‚СЂР°РЅР·Р°РєС†РёРё
+    // Р­С‚Рѕ РіР°СЂР°РЅС‚РёСЂСѓРµС‚, С‡С‚Рѕ РµСЃР»Рё С‡С‚Рѕ-С‚Рѕ РїРѕР№РґРµС‚ РЅРµ С‚Р°Рє, РЅРµ СЃРѕР·РґР°СЃС‚СЃСЏ "РѕРґРёРЅРѕРєРёР№" РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ Р±РµР· РїСЂРѕС„РёР»СЏ.
+    const newUser = await prisma.user.create({
+      data: {
+        name: name,
+        email: email,
+        password: hashedPassword,
+        // Р’Р»РѕР¶РµРЅРЅР°СЏ Р·Р°РїРёСЃСЊ: РѕРґРЅРѕРІСЂРµРјРµРЅРЅРѕ СЃ User СЃРѕР·РґР°РµРј СЃРІСЏР·Р°РЅРЅС‹Р№ СЃ РЅРёРј Profile
+        profile: {
+          create: {}, // РЎРѕР·РґР°РµРј РїСЂРѕС„РёР»СЊ СЃРѕ Р·РЅР°С‡РµРЅРёСЏРјРё РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ, РєРѕС‚РѕСЂС‹Рµ РјС‹ Р·Р°РґР°Р»Рё РІ schema.prisma
+        },
+      },
+      // Р’РєР»СЋС‡Р°РµРј СЃРІСЏР·Р°РЅРЅС‹Р№ РїСЂРѕС„РёР»СЊ РІ РѕС‚РІРµС‚, С‡С‚РѕР±С‹ СѓР±РµРґРёС‚СЊСЃСЏ, С‡С‚Рѕ РѕРЅ СЃРѕР·РґР°Р»СЃСЏ
+      include: {
+        profile: true,
+      },
+    });
+
+    // 6. РћС‚РїСЂР°РІР»СЏРµРј СѓСЃРїРµС€РЅС‹Р№ РѕС‚РІРµС‚
+    // РњС‹ РЅРµ РѕС‚РїСЂР°РІР»СЏРµРј РїР°СЂРѕР»СЊ РѕР±СЂР°С‚РЅРѕ, РґР°Р¶Рµ С…РµС€РёСЂРѕРІР°РЅРЅС‹Р№!
+    res.status(201).json({
+      message: 'РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ СѓСЃРїРµС€РЅРѕ Р·Р°СЂРµРіРёСЃС‚СЂРёСЂРѕРІР°РЅ!',
+      user: {
+        id: newUser.id,
+        name: newUser.name,
+        email: newUser.email,
+        profile: newUser.profile,
+      },
+    });
+
+  } catch (error) {
+    // Р•СЃР»Рё РїСЂРѕРёР·РѕС€Р»Р° Р»СЋР±Р°СЏ РґСЂСѓРіР°СЏ РѕС€РёР±РєР°, РѕС‚РїСЂР°РІР»СЏРµРј РѕС€РёР±РєСѓ 500 (Internal Server Error)
+    console.error("РћС€РёР±РєР° РїСЂРё СЂРµРіРёСЃС‚СЂР°С†РёРё:", error);
+    res.status(500).json({ message: 'Р§С‚Рѕ-С‚Рѕ РїРѕС€Р»Рѕ РЅРµ С‚Р°Рє РЅР° СЃРµСЂРІРµСЂРµ' });
+  }
+});
+
+// === РќРћР’Р«Р™ РњРђР РЁР РЈРў: Р›РћР“РРќ РџРћР›Р¬Р—РћР’РђРўР•Р›РЇ ===
+app.post('/auth/login', async (req, res) => {
+    try {
+      // 1. РџРѕР»СѓС‡Р°РµРј email Рё РїР°СЂРѕР»СЊ РёР· Р·Р°РїСЂРѕСЃР°
+      const { email, password } = req.body;
+  
+      if (!email || !password) {
+        return res.status(400).json({ message: 'РџРѕР¶Р°Р»СѓР№СЃС‚Р°, РІРІРµРґРёС‚Рµ email Рё РїР°СЂРѕР»СЊ' });
+      }
+  
+      // 2. РС‰РµРј РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РІ Р±Р°Р·Рµ РґР°РЅРЅС‹С…
+      const user = await prisma.user.findUnique({
+        where: { email },
+      });
+  
+      // 3. Р•СЃР»Рё РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ РЅРµ РЅР°Р№РґРµРЅ РР›Р РїР°СЂРѕР»Рё РЅРµ СЃРѕРІРїР°РґР°СЋС‚...
+      // bcrypt.compare - Р±РµР·РѕРїР°СЃРЅР°СЏ С„СѓРЅРєС†РёСЏ РґР»СЏ СЃСЂР°РІРЅРµРЅРёСЏ РїР°СЂРѕР»СЏ СЃ С…РµС€РµРј
+      if (!user || !(await bcrypt.compare(password, user.password))) {
+        return res.status(401).json({ message: 'РќРµРІРµСЂРЅС‹Р№ email РёР»Рё РїР°СЂРѕР»СЊ' }); // 401 - Unauthorized
+      }
+  
+      // 4. Р•СЃР»Рё РІСЃРµ С…РѕСЂРѕС€Рѕ, СЃРѕР·РґР°РµРј JWT С‚РѕРєРµРЅ ("РїСЂРѕРїСѓСЃРє")
+      const token = jwt.sign(
+        { userId: user.id }, // Р§С‚Рѕ РјС‹ С…СЂР°РЅРёРј РІ С‚РѕРєРµРЅРµ (РїРѕР»РµР·РЅР°СЏ РЅР°РіСЂСѓР·РєР°)
+        process.env.JWT_SECRET, // РќР°С€ СЃРµРєСЂРµС‚РЅС‹Р№ РєР»СЋС‡ РёР· .env
+        { expiresIn: '24h' } // РЎРєРѕР»СЊРєРѕ "РїСЂРѕРїСѓСЃРє" Р±СѓРґРµС‚ РґРµР№СЃС‚РІРёС‚РµР»РµРЅ
+      );
+  
+      // 5. РћС‚РїСЂР°РІР»СЏРµРј С‚РѕРєРµРЅ РїРѕР»СЊР·РѕРІР°С‚РµР»СЋ
+      res.status(200).json({
+        message: 'Р’С…РѕРґ РІС‹РїРѕР»РЅРµРЅ СѓСЃРїРµС€РЅРѕ!',
+        token: token,
+        userId: user.id,
+        name: user.name,
+      });
+  
+    } catch (error) {
+      console.error("РћС€РёР±РєР° РїСЂРё РІС…РѕРґРµ:", error);
+      res.status(500).json({ message: 'Р§С‚Рѕ-С‚Рѕ РїРѕС€Р»Рѕ РЅРµ С‚Р°Рє РЅР° СЃРµСЂРІРµСЂРµ' });
+    }
+  });
+
+
+// === РќРћР’Р«Р™ РњРђР РЁР РЈРў: РљРђР›РР‘Р РћР’РљРђ РџРћР›Р¬Р—РћР’РђРўР•Р›РЇ ===
+  app.post('/auth/calibrate', authMiddleware, async (req, res) => {
+    try {
+      const userId = req.user.userId;
+      const { answers } = req.body;
+  
+      // РџСЂРѕСЃС‚Р°СЏ Р»РѕРіРёРєР° РєР°Р»РёР±СЂРѕРІРєРё
+      let baseStats = { str: 5, end: 5, agi: 5, int: 5, wis: 5, foc: 5 };
+  
+      if (answers.q1 === 'Р¤РёР·РёС‡РµСЃРєР°СЏ СЃРёР»Р°') {
+        baseStats.str += 3;
+        baseStats.end += 2;
+      } else { // РЎРёР»Р° СЂР°Р·СѓРјР°
+        baseStats.int += 3;
+        baseStats.wis += 2;
+      }
+  
+      if (answers.q2 === 'Р’Р·СЂС‹РІРЅР°СЏ РјРѕС‰СЊ') {
+        baseStats.str += 2;
+        baseStats.agi += 1;
+      } else { // РќРµСЃРіРёР±Р°РµРјР°СЏ РІС‹РЅРѕСЃР»РёРІРѕСЃС‚СЊ
+        baseStats.end += 2;
+        baseStats.foc += 1;
+      }
+  
+      // РћР±РЅРѕРІР»СЏРµРј РїСЂРѕС„РёР»СЊ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ СЃ РЅРѕРІС‹РјРё СЃС‚Р°С‚Р°РјРё
+      await prisma.profile.update({
+        where: { userId },
+        data: {
+          statStr: baseStats.str,
+          statEnd: baseStats.end,
+          statAgi: baseStats.agi,
+          statInt: baseStats.int,
+          statWis: baseStats.wis,
+          statFoc: baseStats.foc,
+        },
+      });
+  
+      res.status(200).json({ message: 'РљР°Р»РёР±СЂРѕРІРєР° СѓСЃРїРµС€РЅРѕ Р·Р°РІРµСЂС€РµРЅР°!' });
+  
+    } catch (error) {
+      console.error("РћС€РёР±РєР° РєР°Р»РёР±СЂРѕРІРєРё:", error);
+      res.status(500).json({ message: 'Р§С‚Рѕ-С‚Рѕ РїРѕС€Р»Рѕ РЅРµ С‚Р°Рє РЅР° СЃРµСЂРІРµСЂРµ' });
+    }
+  });
+
+  // === Р—РђР©РР©Р•РќРќР«Р• РњРђР РЁР РЈРўР« ===
+
+// === Р—РђР©РР©Р•РќРќР«Р• РњРђР РЁР РЈРўР« ===
+
+// Р­С‚РѕС‚ РјР°СЂС€СЂСѓС‚ Р±СѓРґРµС‚ РґРѕСЃС‚СѓРїРµРЅ С‚РѕР»СЊРєРѕ Р°РІС‚РѕСЂРёР·РѕРІР°РЅРЅС‹Рј РїРѕР»СЊР·РѕРІР°С‚РµР»СЏРј
+// v7.0: Р Р•Р¤РђРљРўРћР РРќР“ - С‚РµРїРµСЂСЊ РѕРЅ РІРєР»СЋС‡Р°РµС‚ РІСЃРµ РїРѕР»СЏ РёР· User Рё Profile
+app.get('/profile', authMiddleware, async (req, res) => {
+  try {
+    const userId = req.user.userId;
+
+    // РС‰РµРј РїСЂРѕС„РёР»СЊ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ Рё РІРєР»СЋС‡Р°РµРј Р’РЎР• РґР°РЅРЅС‹Рµ СЃРІСЏР·Р°РЅРЅРѕРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
+    const userWithProfile = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+      include: {
+        profile: true, // Р’РєР»СЋС‡Р°РµРј РІСЃРµ РїРѕР»СЏ РёР· Profile
+      },
+    });
+
+    if (!userWithProfile || !userWithProfile.profile) {
+      return res.status(404).json({ message: 'РџСЂРѕС„РёР»СЊ РЅРµ РЅР°Р№РґРµРЅ' });
+    }
+
+    // v7.0: Р¤РѕСЂРјРёСЂСѓРµРј Р±РѕР»РµРµ СѓРґРѕР±РЅС‹Р№ РѕС‚РІРµС‚ РґР»СЏ С„СЂРѕРЅС‚РµРЅРґР°,
+    // РіРґРµ РїСЂРѕС„РёР»СЊ Рё РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ СЂР°Р·РґРµР»РµРЅС‹, РєР°Рє РѕР¶РёРґР°РµС‚ useAuth.js
+    const response = {
+      ...userWithProfile.profile, // Р’СЃРµ РїРѕР»СЏ РїСЂРѕС„РёР»СЏ (level, xp, stats...)
+      user: { // Р’Р»РѕР¶РµРЅРЅС‹Р№ РѕР±СЉРµРєС‚ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
+          id: userWithProfile.id,
+          name: userWithProfile.name,
+          email: userWithProfile.email,
+          // РЎР°РјРѕРµ РіР»Р°РІРЅРѕРµ - РІРєР»СЋС‡Р°РµРј РІСЃРµ РЅРѕРІС‹Рµ РїРѕР»СЏ!
+          totalMindEffort: userWithProfile.totalMindEffort,
+          totalBodyEffort: userWithProfile.totalBodyEffort,
+          quizzesPassed: userWithProfile.quizzesPassed,
+          approachesCompleted: userWithProfile.approachesCompleted,
+          muscleTension: userWithProfile.muscleTension,
+      }
+    }
+
+    // РћС‚РїСЂР°РІР»СЏРµРј РЅР°Р№РґРµРЅРЅС‹Р№ РїСЂРѕС„РёР»СЊ
+    res.status(200).json(response);
+
+  } catch (error) {
+    console.error("РћС€РёР±РєР° РїСЂРё РїРѕР»СѓС‡РµРЅРёРё РїСЂРѕС„РёР»СЏ (v7.0):", error);
+    res.status(500).json({ message: 'Р§С‚Рѕ-С‚Рѕ РїРѕС€Р»Рѕ РЅРµ С‚Р°Рє РЅР° СЃРµСЂРІРµСЂРµ' });
+  }
+});
+
+
+// v7.0: Р’СЂРµРјРµРЅРЅР°СЏ Р±Р°Р·Р° РґР°РЅРЅС‹С… СѓРїСЂР°Р¶РЅРµРЅРёР№. Р’ Р±СѓРґСѓС‰РµРј СЌС‚Рѕ РјРѕР¶РЅРѕ РІС‹РЅРµСЃС‚Рё РІ РѕС‚РґРµР»СЊРЅСѓСЋ С‚Р°Р±Р»РёС†Сѓ РІ Р‘Р”.
+const exercisesDB = {
+  1: { name: 'РћС‚Р¶РёРјР°РЅРёСЏ', multiplier: 1.0, group: 'push' },
+  2: { name: 'РџРѕРґС‚СЏРіРёРІР°РЅРёСЏ', multiplier: 1.5, group: 'pull' },
+  3: { name: 'РџСЂРёСЃРµРґР°РЅРёСЏ', multiplier: 0.8, group: 'legs' },
+  // ... РјРѕР¶РЅРѕ РґРѕР±Р°РІРёС‚СЊ РґСЂСѓРіРёРµ СѓРїСЂР°Р¶РЅРµРЅРёСЏ
+};
+
+// === Р­РќР”РџРћРРќРў Р”Р›РЇ Р’Р«РџРћР›РќР•РќРРЇ РЈРџР РђР–РќР•РќРРЇ (v7.0 Р Р•Р¤РђРљРўРћР РРќР“) ===
+// v7.0: Р­С‚Рѕ С†РµРЅС‚СЂР°Р»СЊРЅС‹Р№ СЌРЅРґРїРѕРёРЅС‚ РґР»СЏ РїСЂРѕРіСЂРµСЃСЃРёРё. РћРЅ РѕС‚РІРµС‡Р°РµС‚ Р·Р° XP, СЂРѕСЃС‚ СЃС‚Р°С‚РѕРІ Рё Р»РµРІРµР»-Р°РїС‹.
+app.post('/activity/exercise', authMiddleware, async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    // 1. РџРѕР»СѓС‡Р°РµРј РЅРѕРІС‹Рµ РґР°РЅРЅС‹Рµ РѕС‚ С„СЂРѕРЅС‚РµРЅРґР°
+    const { reps, exerciseId, isTrainingMode } = req.body;
+
+    if (!reps || !exerciseId) {
+      return res.status(400).json({ message: 'РќРµРѕР±С…РѕРґРёРјРѕ СѓРєР°Р·Р°С‚СЊ СѓРїСЂР°Р¶РЅРµРЅРёРµ Рё РєРѕР»РёС‡РµСЃС‚РІРѕ РїРѕРІС‚РѕСЂРµРЅРёР№.' });
+    }
+
+    const exercise = exercisesDB[exerciseId];
+    if (!exercise) {
+      return res.status(404).json({ message: 'РЈРїСЂР°Р¶РЅРµРЅРёРµ РЅРµ РЅР°Р№РґРµРЅРѕ.' });
+    }
+
+    // 2. РџРѕР»СѓС‡Р°РµРј Р°РєС‚СѓР°Р»СЊРЅС‹Рµ РґР°РЅРЅС‹Рµ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ Рё РµРіРѕ РїСЂРѕС„РёР»СЏ
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: { profile: true },
+    });
+
+    if (!user || !user.profile) {
+      return res.status(404).json({ message: 'РџСЂРѕС„РёР»СЊ РЅРµ РЅР°Р№РґРµРЅ.' });
+    }
+
+    // 3. РџСЂРѕРІРµСЂСЏРµРј РјРёРЅРёРјР°Р»СЊРЅС‹Р№ РїРѕСЂРѕРі РІС‹РїРѕР»РЅРµРЅРёСЏ (С‚РѕР»СЊРєРѕ РґР»СЏ РѕСЃРЅРѕРІРЅРѕРіРѕ С†РёРєР»Р°)
+    if (!isTrainingMode) {
+      const recommendedReps = getRecommendedReps(user.profile.level, user.profile.statEnd);
+      const minReps = Math.floor(recommendedReps * 0.3);
+      if (reps < minReps) {
+        return res.status(400).json({ 
+          message: `Р”Р»СЏ СЂР°Р·Р±Р»РѕРєРёСЂРѕРІРєРё С‡С‚РµРЅРёСЏ РЅСѓР¶РЅРѕ РІС‹РїРѕР»РЅРёС‚СЊ С…РѕС‚СЏ Р±С‹ 30% РѕС‚ СЂРµРєРѕРјРµРЅРґР°С†РёРё (${minReps} РїРѕРІС‚РѕСЂРµРЅРёР№).` 
+        });
+      }
+    }
+
+    // 4. Р Р°СЃС‡РµС‚С‹ РЅР° РѕСЃРЅРѕРІРµ РІС‹РїРѕР»РЅРµРЅРЅРѕР№ СЂР°Р±РѕС‚С‹
+    const evBody = reps * exercise.multiplier;
+    
+    // Р“РѕС‚РѕРІРёРј РґР°РЅРЅС‹Рµ РґР»СЏ РѕР±РЅРѕРІР»РµРЅРёСЏ. РќР°С‡РёРЅР°РµРј СЃ РЅР°РєРѕРїР»РµРЅРёСЏ "СѓСЃРёР»РёР№".
+    const userDataToUpdate = {
+      totalBodyEffort: { increment: evBody },
+      approachesCompleted: { increment: 1 },
+    };
+    const profileDataToUpdate = {};
+
+    // 5. Р›РѕРіРёРєР° РґР»СЏ РѕСЃРЅРѕРІРЅРѕРіРѕ С†РёРєР»Р° (РЅРµ "Р РµР¶РёРј РўСЂРµРЅРёСЂРѕРІРєРё")
+    if (!isTrainingMode) {
+      // Р Р°СЃСЃС‡РёС‚С‹РІР°РµРј Рё РґРѕР±Р°РІР»СЏРµРј Unity XP
+      const unityXpGained = calculateUnityXp(evBody, user.profile);
+      profileDataToUpdate.currentXp = user.profile.currentXp + unityXpGained;
+      
+      // Р Р°Р·Р±Р»РѕРєРёСЂСѓРµРј С‡С‚РµРЅРёРµ
+      profileDataToUpdate.isReadingUnlocked = true;
+
+      // РџСЂРѕРІРµСЂСЏРµРј Р»РµРІРµР»-Р°Рї (С†РёРєР» while РЅР° СЃР»СѓС‡Р°Р№ РЅРµСЃРєРѕР»СЊРєРёС… СѓСЂРѕРІРЅРµР№ Р·Р° СЂР°Р·)
+      let currentLevel = user.profile.level;
+      let currentXp = profileDataToUpdate.currentXp;
+      let xpForNextLevel = calculateXpForLevel(currentLevel);
+
+      while (currentXp >= xpForNextLevel) {
+        currentLevel++;
+        currentXp -= xpForNextLevel;
+        xpForNextLevel = calculateXpForLevel(currentLevel);
+      }
+      profileDataToUpdate.level = currentLevel;
+      profileDataToUpdate.currentXp = currentXp;
+    }
+
+    // 6. РћР±РЅРѕРІР»СЏРµРј "РќР°РїСЂСЏР¶РµРЅРёРµ РњС‹С€С†"
+    const muscleTension = user.muscleTension || {};
+    const trainedGroup = exercise.group;
+    // TODO: Р’ Р±СѓРґСѓС‰РµРј Р·РґРµСЃСЊ РјРѕР¶РЅРѕ РґРѕР±Р°РІРёС‚СЊ Р»РѕРіРёРєСѓ С€С‚СЂР°С„Р° Рє XP, РµСЃР»Рё muscleTension[trainedGroup] > РїРѕСЂРѕРіР°
+    muscleTension[trainedGroup] = (muscleTension[trainedGroup] || 0) + evBody;
+    userDataToUpdate.muscleTension = muscleTension;
+
+    // 7. Р Р°СЃСЃС‡РёС‚С‹РІР°РµРј Рё РѕР±РЅРѕРІР»СЏРµРј РІСЃРµ СЃС‚Р°С‚С‹
+    // РЎРѕР·РґР°РµРј РІСЂРµРјРµРЅРЅС‹Р№ РѕР±СЉРµРєС‚ СЃ СѓР¶Рµ РѕР±РЅРѕРІР»РµРЅРЅС‹РјРё "СѓСЃРёР»РёСЏРјРё" РґР»СЏ РєРѕСЂСЂРµРєС‚РЅРѕРіРѕ СЂР°СЃС‡РµС‚Р°
+    const tempUpdatedUser = {
+      ...user,
+      totalBodyEffort: user.totalBodyEffort + evBody,
+      approachesCompleted: user.approachesCompleted + 1,
+    };
+    const newStats = calculateNewStats(tempUpdatedUser);
+    Object.assign(profileDataToUpdate, newStats);
+
+    // 8. РЎРѕС…СЂР°РЅСЏРµРј РІСЃРµ РёР·РјРµРЅРµРЅРёСЏ РІ Р±Р°Р·Сѓ РґР°РЅРЅС‹С… РІ РѕРґРЅРѕР№ С‚СЂР°РЅР·Р°РєС†РёРё
+    const [updatedUser, updatedProfile] = await prisma.$transaction([
+      prisma.user.update({ where: { id: userId }, data: userDataToUpdate }),
+      prisma.profile.update({ where: { userId }, data: profileDataToUpdate }),
+    ]);
+
+    // 9. v7.0 Р¤РРќРђР›Р¬РќРћР• РРЎРџР РђР’Р›Р•РќРР•: РћС‚РїСЂР°РІР»СЏРµРј "РѕС‡РёС‰РµРЅРЅС‹Р№" СЂРµР·СѓР»СЊС‚Р°С‚ РЅР° С„СЂРѕРЅС‚РµРЅРґ
+    res.status(200).json({
+      message: 'РЈРїСЂР°Р¶РЅРµРЅРёРµ РІС‹РїРѕР»РЅРµРЅРѕ, РїСЂРѕРіСЂРµСЃСЃ СЃРѕС…СЂР°РЅРµРЅ!',
+      updatedProfile: updatedProfile, // РџСЂРѕС„РёР»СЊ Р±РµР·РѕРїР°СЃРµРЅ РґР»СЏ РѕС‚РїСЂР°РІРєРё
+      updatedUser: {
+        id: updatedUser.id,
+        name: updatedUser.name,
+        email: updatedUser.email,
+        totalMindEffort: updatedUser.totalMindEffort,
+        totalBodyEffort: updatedUser.totalBodyEffort,
+        quizzesPassed: updatedUser.quizzesPassed,
+        approachesCompleted: updatedUser.approachesCompleted,
+        muscleTension: updatedUser.muscleTension,
+      },
+    });
+
+  } catch (error) {
+    console.error("РћС€РёР±РєР° РІ /activity/exercise (v7.0):", error);
+    res.status(500).json({ message: 'Р§С‚Рѕ-С‚Рѕ РїРѕС€Р»Рѕ РЅРµ С‚Р°Рє РЅР° СЃРµСЂРІРµСЂРµ' });
+  }
+});
+  // === Р­РќР”РџРћРРќРў Р”Р›РЇ Р“Р•РќР•Р РђР¦РР РўР•РЎРўРђ РЎ РџРћРњРћР©Р¬Р® AI ===
+app.post('/ai/generate-quiz', authMiddleware, async (req, res) => {
+    try {
+      const { text } = req.body; // РџРѕР»СѓС‡Р°РµРј С‚РµРєСЃС‚ РѕС‚ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
+  
+      if (!text || text.trim().length < 50) { // РџСЂРѕРІРµСЂСЏРµРј, С‡С‚Рѕ С‚РµРєСЃС‚ РЅРµ СЃР»РёС€РєРѕРј РєРѕСЂРѕС‚РєРёР№
+        return res.status(400).json({ message: 'РўРµРєСЃС‚ РґР»СЏ Р°РЅР°Р»РёР·Р° РґРѕР»Р¶РµРЅ СЃРѕРґРµСЂР¶Р°С‚СЊ РјРёРЅРёРјСѓРј 50 СЃРёРјРІРѕР»РѕРІ.' });
+      }
+  
+      // --- Р¤РѕСЂРјРёСЂСѓРµРј РїСЂРѕРјРїС‚ РґР»СЏ DeepSeek ---
+      const prompt = `
+        РџСЂРѕР°РЅР°Р»РёР·РёСЂСѓР№ СЃР»РµРґСѓСЋС‰РёР№ С‚РµРєСЃС‚. РќР° РµРіРѕ РѕСЃРЅРѕРІРµ СЃРіРµРЅРµСЂРёСЂСѓР№ 1 РІРѕРїСЂРѕСЃ РґР»СЏ С‚РµСЃС‚Р° СЃ 4 РІР°СЂРёР°РЅС‚Р°РјРё РѕС‚РІРµС‚Р°. 
+        РћРґРёРЅ РёР· РІР°СЂРёР°РЅС‚РѕРІ РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ РїСЂР°РІРёР»СЊРЅС‹Рј.
+        Р’РµСЂРЅРё СЂРµР·СѓР»СЊС‚Р°С‚ РЎРўР РћР“Рћ РІ С„РѕСЂРјР°С‚Рµ JSON, Р±РµР· РєР°РєРёС…-Р»РёР±Рѕ РґСЂСѓРіРёС… СЃР»РѕРІ РёР»Рё РѕР±СЉСЏСЃРЅРµРЅРёР№.
+        РџСЂРёРјРµСЂ С„РѕСЂРјР°С‚Р°: {"question": "РўРµРєСЃС‚ РІРѕРїСЂРѕСЃР°?", "options": ["Р’Р°СЂРёР°РЅС‚ Рђ", "Р’Р°СЂРёР°РЅС‚ Р‘", "Р’Р°СЂРёР°РЅС‚ Р’", "РџСЂР°РІРёР»СЊРЅС‹Р№ РѕС‚РІРµС‚ Р“"], "correctAnswer": "РџСЂР°РІРёР»СЊРЅС‹Р№ РѕС‚РІРµС‚ Р“"}
+  
+        РўРµРєСЃС‚ РґР»СЏ Р°РЅР°Р»РёР·Р°:
+        ---
+        ${text}
+        ---
+      `;
+  
+      // --- РћС‚РїСЂР°РІР»СЏРµРј Р·Р°РїСЂРѕСЃ Рє API DeepSeek ---
+      const response = await axios.post(
+        'https://api.groq.com/openai/v1/chat/completions', // URL СЌРЅРґРїРѕРёРЅС‚Р° DeepSeek
+        {
+          model: 'llama3-8b-8192', // РёР»Рё 'deepseek-coder'
+          messages: [
+            { role: 'system', content: 'С‹ вЂ” РїРѕР»РµР·РЅС‹Р№ Р°СЃСЃРёСЃС‚РµРЅС‚, РєРѕС‚РѕСЂС‹Р№ СЃРѕР·РґР°РµС‚ С‚РµСЃС‚С‹ РЎРўР РћР“Рћ РІ С„РѕСЂРјР°С‚Рµ JSON.' },
+            { role: 'user', content: prompt }
+          ],
+          temperature: 0.2, // РќРёР·РєР°СЏ С‚РµРјРїРµСЂР°С‚СѓСЂР° РґР»СЏ Р±РѕР»РµРµ РїСЂРµРґСЃРєР°Р·СѓРµРјРѕРіРѕ СЂРµР·СѓР»СЊС‚Р°С‚Р°
+          max_tokens: 500
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${process.env.GROQ_API_KEY}` // РСЃРїРѕР»СЊР·СѓРµРј РЅР°С€ РєР»СЋС‡
+          }
+        }
+      );
+  
+      // --- РћР±СЂР°Р±Р°С‚С‹РІР°РµРј РѕС‚РІРµС‚ РѕС‚ AI ---
+      // РћС‚РІРµС‚ РѕС‚ AI РѕР±С‹С‡РЅРѕ РЅР°С…РѕРґРёС‚СЃСЏ РІ response.data.choices[0].message.content
+      const aiResponseContent = response.data.choices[0].message.content;
+      
+      // РџС‹С‚Р°РµРјСЃСЏ СЂР°СЃРїР°СЂСЃРёС‚СЊ JSON РёР· РѕС‚РІРµС‚Р° AI
+      const quizJson = JSON.parse(aiResponseContent);
+  
+      // РћС‚РїСЂР°РІР»СЏРµРј РіРѕС‚РѕРІС‹Р№ JSON РЅР° С„СЂРѕРЅС‚РµРЅРґ
+      res.status(200).json(quizJson);
+  
+    } catch (error) {
+      // РЈРјРЅР°СЏ РѕР±СЂР°Р±РѕС‚РєР° РѕС€РёР±РѕРє
+      if (error.response) {
+        // РћС€РёР±РєР° РїСЂРёС€Р»Р° РѕС‚ СЃРµСЂРІРµСЂР° DeepSeek (РЅРµРїСЂР°РІРёР»СЊРЅС‹Р№ РєР»СЋС‡, РєРѕРЅС‡РёР»РёСЃСЊ РєСЂРµРґРёС‚С‹ Рё С‚.Рґ.)
+        console.error("РћС€РёР±РєР° РѕС‚ API DeepSeek:", error.response.data);
+        res.status(500).json({ message: 'РћС€РёР±РєР° РїСЂРё РѕР±СЂР°С‰РµРЅРёРё Рє AI СЃРµСЂРІРёСЃСѓ.', details: error.response.data });
+      } else if (error instanceof SyntaxError) {
+        // РћС€РёР±РєР°, РµСЃР»Рё AI РІРµСЂРЅСѓР» РЅРµРІР°Р»РёРґРЅС‹Р№ JSON
+        console.error("AI РІРµСЂРЅСѓР» РЅРµРІР°Р»РёРґРЅС‹Р№ JSON:", error);
+        res.status(500).json({ message: 'AI СЃРµСЂРІРёСЃ РІРµСЂРЅСѓР» РѕС‚РІРµС‚ РІ РЅРµРїСЂР°РІРёР»СЊРЅРѕРј С„РѕСЂРјР°С‚Рµ.' });
+      } else {
+        // Р›СЋР±Р°СЏ РґСЂСѓРіР°СЏ РѕС€РёР±РєР°
+        console.error("РћР±С‰Р°СЏ РѕС€РёР±РєР° РІ /ai/generate-quiz:", error);
+        res.status(500).json({ message: 'Р§С‚Рѕ-С‚Рѕ РїРѕС€Р»Рѕ РЅРµ С‚Р°Рє РЅР° СЃРµСЂРІРµСЂРµ.' });
+      }
+    }
+  });
+  
+// === Р­РќР”РџРћРРќРў Р”Р›РЇ Р—РђР“Р РЈР—РљР РР—РћР‘Р РђР–Р•РќРРЇ Р OCR (v7.0 Р Р•Р¤РђРљРўРћР РРќР“) ===
+app.post('/ocr/upload-and-process', authMiddleware, upload.single('image'), async (req, res) => {
+  try {
+    const userId = req.user.userId;
+
+    if (!req.file) {
+      return res.status(400).json({ message: 'Р¤Р°Р№Р» РЅРµ Р±С‹Р» Р·Р°РіСЂСѓР¶РµРЅ.' });
+    }
+
+    // 1. OCR.space
+    const formData = new FormData();
+    formData.append('language', 'rus');
+    formData.append('apikey', process.env.OCR_SPACE_API_KEY);
+    formData.append('file', req.file.buffer, { filename: req.file.originalname });
+
+    const ocrResponse = await axios.post('https://api.ocr.space/parse/image', formData, { headers: formData.getHeaders() });
+
+    if (ocrResponse.data.IsErroredOnProcessing || !ocrResponse.data.ParsedResults?.[0]?.ParsedText) {
+      return res.status(500).json({ message: 'РћС€РёР±РєР° РїСЂРё СЂР°СЃРїРѕР·РЅР°РІР°РЅРёРё С‚РµРєСЃС‚Р° РёР»Рё С‚РµРєСЃС‚ РїСѓСЃС‚.', details: ocrResponse.data.ErrorMessage });
+    }
+    const recognizedText = ocrResponse.data.ParsedResults[0].ParsedText;
+
+    // 2. РћР±РЅРѕРІР»РµРЅРёРµ "РЈСЃРёР»РёСЏ Р Р°Р·СѓРјР°"
+    const mindEffortGained = recognizedText.length / 10;
+    await prisma.user.update({
+      where: { id: userId },
+      data: { totalMindEffort: { increment: mindEffortGained } },
+    });
+
+    // 3. Groq (Llama 3)
+    const prompt = `
+      РџСЂРѕР°РЅР°Р»РёР·РёСЂСѓР№ СЃР»РµРґСѓСЋС‰РёР№ С‚РµРєСЃС‚. РќР° РµРіРѕ РѕСЃРЅРѕРІРµ СЃРіРµРЅРµСЂРёСЂСѓР№ 1 РІРѕРїСЂРѕСЃ РґР»СЏ С‚РµСЃС‚Р° СЃ 4 РІР°СЂРёР°РЅС‚Р°РјРё РѕС‚РІРµС‚Р°. 
+      РћРґРёРЅ РёР· РІР°СЂРёР°РЅС‚РѕРІ РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ РїСЂР°РІРёР»СЊРЅС‹Рј.
+      Р’РµСЂРЅРё СЂРµР·СѓР»СЊС‚Р°С‚ РЎРўР РћР“Рћ РІ С„РѕСЂРјР°С‚Рµ JSON, Р±РµР· РєР°РєРёС…-Р»РёР±Рѕ РґСЂСѓРіРёС… СЃР»РѕРІ РёР»Рё РѕР±СЉСЏСЃРЅРµРЅРёР№.
+      РџСЂРёРјРµСЂ С„РѕСЂРјР°С‚Р°: {"question": "РўРµРєСЃС‚ РІРѕРїСЂРѕСЃР°?", "options": ["Р’Р°СЂРёР°РЅС‚ Рђ", "Р’Р°СЂРёР°РЅС‚ Р‘", "Р’Р°СЂРёР°РЅС‚ Р’", "РџСЂР°РІРёР»СЊРЅС‹Р№ РѕС‚РІРµС‚ Р“"], "correctAnswer": "РџСЂР°РІРёР»СЊРЅС‹Р№ РѕС‚РІРµС‚ Р“"}
+      РўРµРєСЃС‚ РґР»СЏ Р°РЅР°Р»РёР·Р°:
+      ---
+      ${recognizedText}
+      ---
+    `;
+
+    const groqResponse = await axios.post(
+      'https://api.groq.com/openai/v1/chat/completions',
+      {
+        model: 'llama3-8b-8192',
+        messages: [{ role: 'user', content: prompt }],
+        temperature: 0.2,
+        // v7.0 Р¤РРќРђР›Р¬РќРћР• РРЎРџР РђР’Р›Р•РќРР•: РЈР±РёСЂР°РµРј response_format, С‚Р°Рє РєР°Рє РѕРЅ РјРѕР¶РµС‚ РІС‹Р·С‹РІР°С‚СЊ РѕС€РёР±РєСѓ.
+      },
+      { headers: { 'Authorization': `Bearer ${process.env.GROQ_API_KEY}` } }
+    );
+
+    // 4. v7.0 Р¤РРќРђР›Р¬РќРћР• РРЎРџР РђР’Р›Р•РќРР•: "РЈРјРЅС‹Р№" РїР°СЂСЃРёРЅРі JSON
+    let aiResponseContent = groqResponse.data.choices[0].message.content;
+    
+    // РС‰РµРј РЅР°С‡Р°Р»Рѕ Рё РєРѕРЅРµС† JSON РІ РѕС‚РІРµС‚Рµ AI
+    const firstBracket = aiResponseContent.indexOf('{');
+    const lastBracket = aiResponseContent.lastIndexOf('}');
+
+    if (firstBracket === -1 || lastBracket === -1) {
+        throw new Error("AI РЅРµ РІРµСЂРЅСѓР» РІР°Р»РёРґРЅС‹Р№ JSON РѕР±СЉРµРєС‚.");
+    }
+
+    const jsonString = aiResponseContent.substring(firstBracket, lastBracket + 1);
+    const quizJson = JSON.parse(jsonString);
+
+    // 5. РћС‚РїСЂР°РІР»СЏРµРј РіРѕС‚РѕРІС‹Р№ РєРІРёР· РЅР° С„СЂРѕРЅС‚РµРЅРґ
+    res.status(200).json(quizJson);
+
+  } catch (error) {
+    console.error("РџРѕР»РЅР°СЏ РѕС€РёР±РєР° РІ /ocr/upload-and-process:", error);
+    if (error.response) {
+        console.error("Р”Р°РЅРЅС‹Рµ РѕС€РёР±РєРё РѕС‚ РІРЅРµС€РЅРµРіРѕ API:", error.response.data);
+    }
+    res.status(500).json({ message: 'Р§С‚Рѕ-С‚Рѕ РїРѕС€Р»Рѕ РЅРµ С‚Р°Рє РЅР° СЃРµСЂРІРµСЂРµ РїСЂРё РѕР±СЂР°Р±РѕС‚РєРµ С„Р°Р№Р»Р°.' });
+  }
+});
+
+// === Р­РќР”РџРћРРќРў Р”Р›РЇ РџР РћР’Р•Р РљР РћРўР’Р•РўРђ РќРђ РљР’РР— (v7.0 Р Р•Р¤РђРљРўРћР РРќР“) ===
+// v7.0: Р­С‚РѕС‚ СЌРЅРґРїРѕРёРЅС‚ Р±РѕР»СЊС€Рµ РЅРµ РЅР°С‡РёСЃР»СЏРµС‚ XP. РћРЅ С‚РѕР»СЊРєРѕ РїСЂРѕРІРµСЂСЏРµС‚ РѕС‚РІРµС‚,
+// СѓРІРµР»РёС‡РёРІР°РµС‚ СЃС‡РµС‚С‡РёРє РєРІРёР·РѕРІ РґР»СЏ СЂРѕСЃС‚Р° РњСѓРґСЂРѕСЃС‚Рё (WIS) Рё Р±Р»РѕРєРёСЂСѓРµС‚ С‡С‚РµРЅРёРµ РґРѕ РІС‹РїРѕР»РЅРµРЅРёСЏ СѓРїСЂР°Р¶РЅРµРЅРёСЏ.
+// === Р­РќР”РџРћРРќРў Р”Р›РЇ РџР РћР’Р•Р РљР РћРўР’Р•РўРђ РќРђ РљР’РР— (v7.0 Р¤РРќРђР›Р¬РќР«Р™ Р Р•Р¤РђРљРўРћР РРќР“) ===
+app.post('/activity/submit-quiz', authMiddleware, async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const { userAnswer, correctAnswer } = req.body;
+
+    if (userAnswer !== correctAnswer) {
+      return res.status(200).json({ success: false, message: 'РћС‚РІРµС‚ РЅРµРІРµСЂРЅС‹Р№. РџРѕРїСЂРѕР±СѓР№С‚Рµ РІ СЃР»РµРґСѓСЋС‰РёР№ СЂР°Р·.' });
+    }
+
+    const [updatedUser, updatedProfile] = await prisma.$transaction([
+      prisma.user.update({
+        where: { id: userId },
+        data: { quizzesPassed: { increment: 1 } },
+      }),
+      prisma.profile.update({
+        where: { userId },
+        data: { isReadingUnlocked: false },
+      }),
+    ]);
+
+    // v7.0 Р¤РРќРђР›Р¬РќРћР• РРЎРџР РђР’Р›Р•РќРР•: РћС‚РїСЂР°РІР»СЏРµРј "РѕС‡РёС‰РµРЅРЅС‹Р№" РѕР±СЉРµРєС‚ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ, Р±РµР· РїР°СЂРѕР»СЏ Рё Р»РёС€РЅРёС… РїРѕР»РµР№.
+    // Р­С‚Рѕ Р±РµР·РѕРїР°СЃРЅРѕ Рё РїСЂРµРґРѕС‚РІСЂР°С‰Р°РµС‚ РѕС€РёР±РєРё СЃРµСЂРёР°Р»РёР·Р°С†РёРё.
+    res.status(200).json({
+      success: true,
+      message: 'Р’РµСЂРЅРѕ! Р—РЅР°РЅРёСЏ СѓСЃРІРѕРµРЅС‹. РўРµРїРµСЂСЊ РІС‹РїРѕР»РЅРёС‚Рµ С„РёР·РёС‡РµСЃРєРѕРµ СѓРїСЂР°Р¶РЅРµРЅРёРµ.',
+      updatedProfile: updatedProfile, // РџСЂРѕС„РёР»СЊ РЅРµ СЃРѕРґРµСЂР¶РёС‚ СЃРµРєСЂРµС‚РЅС‹С… РґР°РЅРЅС‹С…, РµРіРѕ РјРѕР¶РЅРѕ РѕС‚РїСЂР°РІР»СЏС‚СЊ С†РµР»РёРєРѕРј.
+      updatedUser: {
+        id: updatedUser.id,
+        name: updatedUser.name,
+        email: updatedUser.email,
+        totalMindEffort: updatedUser.totalMindEffort,
+        totalBodyEffort: updatedUser.totalBodyEffort,
+        quizzesPassed: updatedUser.quizzesPassed,
+        approachesCompleted: updatedUser.approachesCompleted,
+        muscleTension: updatedUser.muscleTension,
+      },
+    });
+
+  } catch (error) {
+    console.error("РћС€РёР±РєР° РІ /activity/submit-quiz (v7.0):", error);
+    res.status(500).json({ message: 'Р§С‚Рѕ-С‚Рѕ РїРѕС€Р»Рѕ РЅРµ С‚Р°Рє РЅР° СЃРµСЂРІРµСЂРµ' });
+  }
+});
+  
+
+
+// --- 5. Р—Р°РїСѓСЃРє СЃРµСЂРІРµСЂР° ---
+app.listen(PORT, () => {
+  console.log(`Р‘СЌРєРµРЅРґ-СЃРµСЂРІРµСЂ СѓСЃРїРµС€РЅРѕ Р·Р°РїСѓС‰РµРЅ РЅР° РїРѕСЂС‚Сѓ ${PORT}`);
+});
+
+--- END OF FILE: backend/index.js ---
+
+
+--- START OF FILE: backend/package.json ---
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@prisma/client": "^6.9.0",
+    "axios": "^1.10.0",
+    "bcryptjs": "^3.0.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "form-data": "^4.0.3",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^2.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10",
+    "prisma": "^6.9.0"
+  }
+}
+
+
+--- END OF FILE: backend/package.json ---
+
+
+--- START OF FILE: backend/requests.http ---
+###ai 
+###sk-9303412a5efd4672a9be217196a54dc8
+
+###groq
+### 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
+
+### Р—Р°РїСЂРѕСЃ РЅР° СЂРµРіРёСЃС‚СЂР°С†РёСЋ РЅРѕРІРѕРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
+POST http://localhost:3001/auth/signup
+Content-Type: application/json
+
+{
+  "name": "Satoru Gojo",
+  "email": "satoru@jujutsu.com",
+  "password": "strongpassword123"
+}
+
+### Р’С…РѕРґ СЃСѓС‰РµСЃС‚РІСѓСЋС‰РµРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
+POST http://localhost:3001/auth/login
+Content-Type: application/json
+
+{
+  "email": "satoru@jujutsu.com",
+  "password": "strongpassword123"
+}
+
+### РџРѕР»СѓС‡РµРЅРёРµ РїСЂРѕС„РёР»СЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ (Р·Р°С‰РёС‰РµРЅРЅС‹Р№ РјР°СЂС€СЂСѓС‚)
+GET http://localhost:3001/profile
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTc1MDE3MDY1NiwiZXhwIjoxNzUwMjU3MDU2fQ.82SQN9hCmbdlXZOmBLcuJXcY67M-Ikh3DU2o3-J7pjI
+
+### Р’С‹РїРѕР»РЅРёС‚СЊ СѓРїСЂР°Р¶РЅРµРЅРёРµ Рё РїРѕР»СѓС‡РёС‚СЊ XP
+POST http://localhost:3001/activity/exercise
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTc1MDE3MDY1NiwiZXhwIjoxNzUwMjU3MDU2fQ.82SQN9hCmbdlXZOmBLcuJXcY67M-Ikh3DU2o3-J7pjI
+
+{
+  "exerciseName": "10 РћС‚Р¶РёРјР°РЅРёР№"
+}
+
+### РЎРіРµРЅРµСЂРёСЂРѕРІР°С‚СЊ С‚РµСЃС‚ СЃ РїРѕРјРѕС‰СЊСЋ AI
+POST http://localhost:3001/ai/generate-quiz
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTc1MDE3MDY1NiwiZXhwIjoxNzUwMjU3MDU2fQ.82SQN9hCmbdlXZOmBLcuJXcY67M-Ikh3DU2o3-J7pjI
+
+{
+  "text": "РЎРѕР»РЅРµС‡РЅР°СЏ СЃРёСЃС‚РµРјР° СЃРѕСЃС‚РѕРёС‚ РёР· РІРѕСЃСЊРјРё РїР»Р°РЅРµС‚. РњРµСЂРєСѓСЂРёР№ вЂ” Р±Р»РёР¶Р°Р№С€Р°СЏ Рє РЎРѕР»РЅС†Сѓ РїР»Р°РЅРµС‚Р°, Р° РќРµРїС‚СѓРЅ вЂ” СЃР°РјР°СЏ РґР°Р»СЊРЅСЏСЏ. Р—РµРјР»СЏ СЏРІР»СЏРµС‚СЃСЏ С‚СЂРµС‚СЊРµР№ РїР»Р°РЅРµС‚РѕР№ РѕС‚ РЎРѕР»РЅС†Р° Рё РµРґРёРЅСЃС‚РІРµРЅРЅРѕР№ РёР·РІРµСЃС‚РЅРѕР№ РїР»Р°РЅРµС‚РѕР№, РЅР° РєРѕС‚РѕСЂРѕР№ РµСЃС‚СЊ Р¶РёР·РЅСЊ. Р®РїРёС‚РµСЂ вЂ” СЃР°РјР°СЏ Р±РѕР»СЊС€Р°СЏ РїР»Р°РЅРµС‚Р° РІ РЎРѕР»РЅРµС‡РЅРѕР№ СЃРёСЃС‚РµРјРµ."
+}
+
+--- END OF FILE: backend/requests.http ---
+
+
+--- START OF FILE: backend/middleware/auth.js ---
+const jwt = require('jsonwebtoken');
+
+// РќР°С€ middleware-РѕС…СЂР°РЅРЅРёРє
+const authMiddleware = (req, res, next) => {
+  // 1. РС‰РµРј С‚РѕРєРµРЅ. РћР±С‹С‡РЅРѕ РµРіРѕ РїСЂРёСЃС‹Р»Р°СЋС‚ РІ Р·Р°РіРѕР»РѕРІРєРµ Authorization РІ С„РѕСЂРјР°С‚Рµ "Bearer <token>"
+  const authHeader = req.headers.authorization;
+
+  // 2. Р•СЃР»Рё Р·Р°РіРѕР»РѕРІРєР° РЅРµС‚ РёР»Рё РѕРЅ РЅРµ РІ РїСЂР°РІРёР»СЊРЅРѕРј С„РѕСЂРјР°С‚Рµ, РѕС‚РєР°Р·С‹РІР°РµРј РІ РґРѕСЃС‚СѓРїРµ
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ message: 'Р”РѕСЃС‚СѓРї Р·Р°РїСЂРµС‰РµРЅ. РўРѕРєРµРЅ РЅРµ РїСЂРµРґРѕСЃС‚Р°РІР»РµРЅ.' });
+  }
+
+  // 3. РР·РІР»РµРєР°РµРј СЃР°Рј С‚РѕРєРµРЅ, РѕС‚СЂРµР·Р°СЏ "Bearer "
+  const token = authHeader.split(' ')[1];
+
+  try {
+    // 4. РџСЂРѕРІРµСЂСЏРµРј С‚РѕРєРµРЅ. jwt.verify РґРµР»Р°РµС‚ РІСЃСЋ РјР°РіРёСЋ:
+    //    - РџСЂРѕРІРµСЂСЏРµС‚, С‡С‚Рѕ С‚РѕРєРµРЅ РЅРµ РїРѕРґРґРµР»Р°РЅ (СЃ РїРѕРјРѕС‰СЊСЋ РЅР°С€РµРіРѕ JWT_SECRET)
+    //    - РџСЂРѕРІРµСЂСЏРµС‚, С‡С‚Рѕ СЃСЂРѕРє РґРµР№СЃС‚РІРёСЏ С‚РѕРєРµРЅР° РЅРµ РёСЃС‚РµРє
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    // 5. Р•СЃР»Рё С‚РѕРєРµРЅ РІР°Р»РёРґРЅС‹Р№, РјС‹ РґРѕР±Р°РІР»СЏРµРј РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РїРѕР»СЊР·РѕРІР°С‚РµР»Рµ (РµРіРѕ ID)
+    //    РїСЂСЏРјРѕ РІ РѕР±СЉРµРєС‚ Р·Р°РїСЂРѕСЃР° (req). РўРµРїРµСЂСЊ РІСЃРµ СЃР»РµРґСѓСЋС‰РёРµ РѕР±СЂР°Р±РѕС‚С‡РёРєРё
+    //    Р±СѓРґСѓС‚ Р·РЅР°С‚СЊ, РєР°РєРѕР№ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ СЃРґРµР»Р°Р» СЌС‚РѕС‚ Р·Р°РїСЂРѕСЃ.
+    req.user = { userId: decoded.userId };
+
+    // 6. Р’С‹Р·С‹РІР°РµРј next(), С‡С‚РѕР±С‹ РїРµСЂРµРґР°С‚СЊ СѓРїСЂР°РІР»РµРЅРёРµ СЃР»РµРґСѓСЋС‰РµРјСѓ РѕР±СЂР°Р±РѕС‚С‡РёРєСѓ РІ С†РµРїРѕС‡РєРµ (РЅР°С€РµРјСѓ РјР°СЂС€СЂСѓС‚Сѓ)
+    next();
+  } catch (error) {
+    // Р•СЃР»Рё jwt.verify РІС‹РґР°РµС‚ РѕС€РёР±РєСѓ (РЅРµРІР°Р»РёРґРЅС‹Р№ С‚РѕРєРµРЅ), РѕС‚РєР°Р·С‹РІР°РµРј РІ РґРѕСЃС‚СѓРїРµ
+    res.status(401).json({ message: 'РќРµРІР°Р»РёРґРЅС‹Р№ С‚РѕРєРµРЅ.' });
+  }
+};
+
+module.exports = authMiddleware; // Р­РєСЃРїРѕСЂС‚РёСЂСѓРµРј РЅР°С€РµРіРѕ РѕС…СЂР°РЅРЅРёРєР°, С‡С‚РѕР±С‹ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ РµРіРѕ РІ index.js
+
+--- END OF FILE: backend/middleware/auth.js ---
+
+
+--- START OF FILE: backend/prisma/schema.prisma ---
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// === РњРћР”Р•Р›Р¬ РџРћР›Р¬Р—РћР’РђРўР•Р›РЇ ===
+// v7.0: РџРµСЂРµРЅРѕСЃРёРј СЃСЋРґР° РІСЃРµ "РЅР°РєРѕРїРёС‚РµР»СЊРЅС‹Рµ" РјРµС‚СЂРёРєРё, РѕС‚ РєРѕС‚РѕСЂС‹С… РЅР°РїСЂСЏРјСѓСЋ Р·Р°РІРёСЃСЏС‚ СЃС‚Р°С‚С‹.
+// Р­С‚Рѕ РґРµР»Р°РµС‚ РјРѕРґРµР»СЊ Profile С‡РёСЃС‚Рѕ "РѕС‚РѕР±СЂР°Р¶Р°СЋС‰РµР№", Р° User - "РЅР°РєРѕРїРёС‚РµР»СЊРЅРѕР№".
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  name      String?
+
+  // v7.0: РџРѕР»СЏ РґР»СЏ РѕС‚СЃР»РµР¶РёРІР°РЅРёСЏ "СѓСЃРёР»РёР№", РѕС‚ РєРѕС‚РѕСЂС‹С… СЂР°СЃС‚СѓС‚ С…Р°СЂР°РєС‚РµСЂРёСЃС‚РёРєРё.
+  totalMindEffort     Float    @default(0) // Р”Р»СЏ СЂРѕСЃС‚Р° INT. Р‘СѓРґРµРј СЃС‡РёС‚Р°С‚СЊ РєР°Рє (РєРѕР»-РІРѕ СЃРёРјРІРѕР»РѕРІ / 10).
+  totalBodyEffort     Float    @default(0) // Р”Р»СЏ СЂРѕСЃС‚Р° STR. Р Р°СЃСЃС‡РёС‚С‹РІР°РµС‚СЃСЏ РѕС‚ EV_Body.
+  quizzesPassed       Int      @default(0) // Р”Р»СЏ СЂРѕСЃС‚Р° WIS. +1 Р·Р° РєР°Р¶РґС‹Р№ РїСЂРѕР№РґРµРЅРЅС‹Р№ РєРІРёР·.
+  approachesCompleted Int      @default(0) // Р”Р»СЏ СЂРѕСЃС‚Р° END. +1 Р·Р° РєР°Р¶РґС‹Р№ РІС‹РїРѕР»РЅРµРЅРЅС‹Р№ РїРѕРґС…РѕРґ.
+
+  // v7.0: РЎРёСЃС‚РµРјР° РјС‹С€РµС‡РЅРѕРіРѕ РІРѕСЃСЃС‚Р°РЅРѕРІР»РµРЅРёСЏ. РҐСЂР°РЅРёРј РІ JSON.
+  // РџСЂРёРјРµСЂ: { "push": 100, "pull": 20, "legs": 0 }
+  muscleTension       Json     @default("{}")
+
+  // РЎРІСЏР·Рё
+  profile             Profile?
+  activities          ActivityLog[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// === РњРћР”Р•Р›Р¬ РџР РћР¤РР›РЇ Р“Р•Р РћРЇ ===
+// v7.0: РўРµРїРµСЂСЊ СЌС‚Рѕ "РІРёС‚СЂРёРЅР°" С‚РµРєСѓС‰РµРіРѕ СЃРѕСЃС‚РѕСЏРЅРёСЏ РіРµСЂРѕСЏ. Р’СЃРµ СЂР°СЃС‡РµС‚С‹ РІС‹РЅРµСЃРµРЅС‹.
+model Profile {
+  id        Int      @id @default(autoincrement())
+  level     Int      @default(1)
+  currentXp Int      @default(0) // v7.0: РћРїС‹С‚ РІ СЂР°РјРєР°С… С‚РµРєСѓС‰РµРіРѕ СѓСЂРѕРІРЅСЏ. РЎР±СЂР°СЃС‹РІР°РµС‚СЃСЏ РїСЂРё Р»РµРІРµР»-Р°РїРµ.
+
+  // v7.0: РЈР±РёСЂР°РµРј Р»РёС€РЅРёРµ СЃС‚Р°С‚С‹, РѕСЃС‚Р°РІР»СЏРµРј С‚РѕР»СЊРєРѕ С‚Рµ, С‡С‚Рѕ РІ MASTER_PLAN.
+  // РћРЅРё Р±РѕР»СЊС€Рµ РЅРµ СЂР°СЃС‚СѓС‚ РЅР°РїСЂСЏРјСѓСЋ, Р° СЏРІР»СЏСЋС‚СЃСЏ РїСЂРѕРёР·РІРѕРґРЅС‹РјРё РѕС‚ "СѓСЃРёР»РёР№" РІ User.
+  statStr   Int      @default(1) // РЎРёР»Р°
+  statEnd   Int      @default(1) // Р’С‹РЅРѕСЃР»РёРІРѕСЃС‚СЊ
+  statInt   Int      @default(1) // РРЅС‚РµР»Р»РµРєС‚
+  statWis   Int      @default(1) // РњСѓРґСЂРѕСЃС‚СЊ
+
+  // v7.0: РЈР±РёСЂР°РµРј xpToNextLevel, С‚.Рє. РѕРЅ С‚РµРїРµСЂСЊ РІС‹С‡РёСЃР»СЏРµС‚СЃСЏ РЅР° Р»РµС‚Сѓ.
+  // v7.0: РЈР±РёСЂР°РµРј statAgi Рё statFoc.
+
+  // v7.0: Р­С‚РѕС‚ С„Р»Р°Рі РѕСЃС‚Р°РµС‚СЃСЏ, РѕРЅ РёРґРµР°Р»СЊРЅРѕ РїРѕРґС…РѕРґРёС‚ РґР»СЏ РЅРѕРІРѕРіРѕ РёРіСЂРѕРІРѕРіРѕ С†РёРєР»Р°.
+  isReadingUnlocked Boolean @default(true)
+
+  // РЎРІСЏР·СЊ СЃ РїРѕР»СЊР·РѕРІР°С‚РµР»РµРј (РѕРґРёРЅ-Рє-РѕРґРЅРѕРјСѓ)
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int      @unique
+}
+
+// === РњРћР”Р•Р›Р¬ Р›РћР“Рђ РђРљРўРР’РќРћРЎРўР ===
+// v7.0: РћСЃС‚Р°РІР»СЏРµРј Р±РµР· РёР·РјРµРЅРµРЅРёР№. РџРѕР»РµР·РЅР° РґР»СЏ РѕС‚Р»Р°РґРєРё Рё Р±СѓРґСѓС‰РёС… С„РёС‡.
+model ActivityLog {
+  id           Int      @id @default(autoincrement())
+  activityType String
+  description  String
+  xpGained     Int
+  statAffected String?
+
+  // РЎРІСЏР·СЊ СЃ РїРѕР»СЊР·РѕРІР°С‚РµР»РµРј (РјРЅРѕРіРёРµ-Рє-РѕРґРЅРѕРјСѓ)
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+
+  createdAt DateTime @default(now())
+}
+
+--- END OF FILE: backend/prisma/schema.prisma ---
+
+
+--- START OF FILE: backend/services/gameMechanicsService.js ---
+// services/gameMechanicsService.js
+
+/**
+ * Р Р°СЃСЃС‡РёС‚С‹РІР°РµС‚ РєРѕР»РёС‡РµСЃС‚РІРѕ РѕРїС‹С‚Р°, РЅРµРѕР±С…РѕРґРёРјРѕРµ РґР»СЏ РґРѕСЃС‚РёР¶РµРЅРёСЏ СЃР»РµРґСѓСЋС‰РµРіРѕ СѓСЂРѕРІРЅСЏ.
+ * Р¤РѕСЂРјСѓР»Р°: floor(100 * (L ^ 1.5))
+ * @param {number} level РўРµРєСѓС‰РёР№ СѓСЂРѕРІРµРЅСЊ.
+ * @returns {number} РљРѕР»РёС‡РµСЃС‚РІРѕ XP РґР»СЏ СЃР»РµРґСѓСЋС‰РµРіРѕ СѓСЂРѕРІРЅСЏ.
+ */
+function calculateXpForLevel(level) {
+    return Math.floor(100 * Math.pow(level, 1.5));
+  }
+  
+  /**
+   * Р Р°СЃСЃС‡РёС‚С‹РІР°РµС‚ СЂРµРєРѕРјРµРЅРґСѓРµРјРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ РїРѕРІС‚РѕСЂРµРЅРёР№ РґР»СЏ СѓРїСЂР°Р¶РЅРµРЅРёСЏ.
+   * Р¤РѕСЂРјСѓР»Р°: floor(3 + (РЈСЂРѕРІРµРЅСЊ / 5) + (END / 10))
+   * @param {number} level РЈСЂРѕРІРµРЅСЊ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ.
+   * @param {number} statEnd РҐР°СЂР°РєС‚РµСЂРёСЃС‚РёРєР° "Р’С‹РЅРѕСЃР»РёРІРѕСЃС‚СЊ" (END).
+   * @returns {number} Р РµРєРѕРјРµРЅРґРѕРІР°РЅРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ РїРѕРІС‚РѕСЂРµРЅРёР№.
+   */
+  function getRecommendedReps(level, statEnd) {
+    return Math.floor(3 + (level / 5) + (statEnd / 10));
+  }
+ /**
+ * Р Р°СЃСЃС‡РёС‚С‹РІР°РµС‚ "Р•РґРёРЅС‹Р№ РћРїС‹С‚" (Unity XP), РїРѕР»СѓС‡Р°РµРјС‹Р№ Р·Р° РІС‹РїРѕР»РЅРµРЅРёРµ СѓРїСЂР°Р¶РЅРµРЅРёСЏ.
+ * Р¤РѕСЂРјСѓР»Р°: (EV_Body * 3) * (1 + (STR + WIS) / 200)
+ * @param {number} evBody "РЈСЃРёР»РёРµ С‚РµР»Р°" (РЎРґРµР»Р°РЅРѕ_РџРѕРІС‚РѕСЂРµРЅРёР№ * РњРЅРѕР¶РёС‚РµР»СЊ_РЈРїСЂР°Р¶РЅРµРЅРёСЏ).
+ * @param {object} profile РћР±СЉРµРєС‚ РїСЂРѕС„РёР»СЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ.
+ * @param {number} profile.statStr РЎРёР»Р° (STR).
+ * @param {number} profile.statWis РњСѓРґСЂРѕСЃС‚СЊ (WIS).
+ * @returns {number} РљРѕР»РёС‡РµСЃС‚РІРѕ РѕС‡РєРѕРІ РѕРїС‹С‚Р°.
+ */
+function calculateUnityXp(evBody, profile) {
+  // v7.0 Р¤РРќРђР›Р¬РќРћР• РРЎРџР РђР’Р›Р•РќРР•: РСЃРїРѕР»СЊР·СѓРµРј РїСЂР°РІРёР»СЊРЅС‹Рµ РёРјРµРЅР° РїРѕР»РµР№ 'statStr' Рё 'statWis'
+  const xp = (evBody * 3) * (1 + ((profile.statStr || 1) + (profile.statWis || 1)) / 200);
+  return Math.floor(xp);
+}
+  
+  /**
+   * РџСЂРѕРІРµСЂСЏРµС‚ Рё СЂР°СЃСЃС‡РёС‚С‹РІР°РµС‚ РЅРѕРІС‹Рµ Р·РЅР°С‡РµРЅРёСЏ С…Р°СЂР°РєС‚РµСЂРёСЃС‚РёРє РЅР° РѕСЃРЅРѕРІРµ РЅР°РєРѕРїР»РµРЅРЅС‹С… "СѓСЃРёР»РёР№".
+   * @param {object} user РћР±СЉРµРєС‚ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РёР· Р‘Р”, СЃРѕРґРµСЂР¶Р°С‰РёР№ total-РїРѕР»СЏ.
+   * @returns {object} РћР±СЉРµРєС‚ СЃ РЅРѕРІС‹РјРё Р·РЅР°С‡РµРЅРёСЏРјРё С…Р°СЂР°РєС‚РµСЂРёСЃС‚РёРє { statStr, statEnd, statInt, statWis }.
+   */
+  function calculateNewStats(user) {
+      // v7.0: Р‘Р°Р·РѕРІРѕРµ Р·РЅР°С‡РµРЅРёРµ СЃС‚Р°С‚РѕРІ СЂР°РІРЅРѕ 1.
+      const baseStatValue = 1;
+  
+      // INT: +1 Р·Р° РєР°Р¶РґС‹Рµ 1000 totalMindEffort.
+      const newInt = baseStatValue + Math.floor((user.totalMindEffort || 0) / 1000);
+  
+      // WIS: +1 Р·Р° РєР°Р¶РґС‹Рµ 20 РїСЂРѕР№РґРµРЅРЅС‹С… РєРІРёР·РѕРІ.
+      const newWis = baseStatValue + Math.floor((user.quizzesPassed || 0) / 20);
+  
+      // STR: +1 Р·Р° РєР°Р¶РґС‹Рµ 1000 totalBodyEffort.
+      const newStr = baseStatValue + Math.floor((user.totalBodyEffort || 0) / 1000);
+  
+      // END: +1 Р·Р° РєР°Р¶РґС‹Рµ 50 РІС‹РїРѕР»РЅРµРЅРЅС‹С… РїРѕРґС…РѕРґРѕРІ.
+      const newEnd = baseStatValue + Math.floor((user.approachesCompleted || 0) / 50);
+  
+      return {
+          statStr: newStr,
+          statEnd: newEnd,
+          statInt: newInt,
+          statWis: newWis,
+      };
+  }
+  
+  
+  // Р­РєСЃРїРѕСЂС‚РёСЂСѓРµРј РІСЃРµ С„СѓРЅРєС†РёРё, С‡С‚РѕР±С‹ РёС… РјРѕР¶РЅРѕ Р±С‹Р»Рѕ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ РІ РґСЂСѓРіРёС… С„Р°Р№Р»Р°С… (РЅР°РїСЂРёРјРµСЂ, РІ index.js)
+  module.exports = {
+    calculateXpForLevel,
+    getRecommendedReps,
+    calculateUnityXp,
+    calculateNewStats,
+  };
+
+--- END OF FILE: backend/services/gameMechanicsService.js ---
+
+
+--- START OF FILE: frontend/.gitignore ---
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files (can opt-in for committing if needed)
+.env*
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+
+--- END OF FILE: frontend/.gitignore ---
+
+
+--- START OF FILE: frontend/eslint.config.mjs ---
+import { dirname } from "path";
+import { fileURLToPath } from "url";
+import { FlatCompat } from "@eslint/eslintrc";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+const compat = new FlatCompat({
+  baseDirectory: __dirname,
+});
+
+const eslintConfig = [...compat.extends("next/core-web-vitals")];
+
+export default eslintConfig;
+
+
+--- END OF FILE: frontend/eslint.config.mjs ---
+
+
+--- START OF FILE: frontend/jsconfig.json ---
+{
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  }
+}
+
+
+--- END OF FILE: frontend/jsconfig.json ---
+
+
+--- START OF FILE: frontend/next.config.mjs ---
+/** @type {import('next').NextConfig} */
+const nextConfig = {};
+
+export default nextConfig;
+
+
+--- END OF FILE: frontend/next.config.mjs ---
+
+
+--- START OF FILE: frontend/package.json ---
+{
+  "name": "frontend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "axios": "^1.10.0",
+    "next": "15.3.3",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4.1.10",
+    "eslint": "^9",
+    "eslint-config-next": "15.3.3",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.10"
+  }
+}
+
+
+--- END OF FILE: frontend/package.json ---
+
+
+--- START OF FILE: frontend/postcss.config.mjs ---
+// frontend/postcss.config.mjs
+const config = {
+  plugins: {
+    '@tailwindcss/postcss': {
+      // РЈРєР°Р·С‹РІР°РµРј Tailwind v4, РіРґРµ РёСЃРєР°С‚СЊ РёСЃРїРѕР»СЊР·СѓРµРјС‹Рµ РєР»Р°СЃСЃС‹
+      content: [
+        './src/app/**/*.{js,ts,jsx,tsx,mdx}',
+        './src/components/**/*.{js,ts,jsx,tsx,mdx}',
+      ],
+    },
+  },
+};
+export default config;
+
+--- END OF FILE: frontend/postcss.config.mjs ---
+
+
+--- START OF FILE: frontend/README.md ---
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+
+## Getting Started
+
+First, run the development server:
+
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+
+## Learn More
+
+To learn more about Next.js, take a look at the following resources:
+
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+
+## Deploy on Vercel
+
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+
+--- END OF FILE: frontend/README.md ---
+
+
+--- START OF FILE: frontend/src/app/globals.css ---
+/* frontend/src/app/globals.css */
+
+/* 1. РРјРїРѕСЂС‚РёСЂСѓРµРј Tailwind CSS v4 */
+@import "tailwindcss";
+
+/* 
+  2. РћРїСЂРµРґРµР»СЏРµРј РЅР°С€Сѓ РєР°СЃС‚РѕРјРЅСѓСЋ С‚РµРјСѓ.
+  РСЃРїРѕР»СЊР·СѓРµРј "inline" РґР»СЏ РїСЂР°РІРёР»СЊРЅРѕР№ РѕР±СЂР°Р±РѕС‚РєРё СЃСЃС‹Р»РѕРє РЅР° РїРµСЂРµРјРµРЅРЅС‹Рµ С€СЂРёС„С‚РѕРІ.
+*/
+@theme inline {
+  /* --- Р¦РІРµС‚РѕРІР°СЏ РїР°Р»РёС‚СЂР° "Solo Mind" --- */
+  --color-background-primary: #111827;
+  --color-background-secondary: #1F2937;
+  
+  --color-text-primary: #E5E7EB;
+  --color-text-secondary: #9CA3AF;
+  
+  --color-accent-primary: #6366F1;
+  --color-accent-secondary: #A78BFA;
+  --color-accent-gold: #FBBF24;
+  
+  /* --- РЎРµРјР°РЅС‚РёС‡РµСЃРєРёРµ С†РІРµС‚Р° --- */
+  --color-success: #22C55E;
+  --color-danger: #EF4444;
+  --color-warning: #F59E0B;
+  
+  /* --- РЁСЂРёС„С‚С‹ (СЃСЃС‹Р»Р°СЋС‚СЃСЏ РЅР° РїРµСЂРµРјРµРЅРЅС‹Рµ РёР· layout.js) --- */
+  --font-sans: var(--font-poppins);
+  --font-display: var(--font-orbitron);
+  
+  /* --- РўРµРЅРё --- */
+  --shadow-glow-primary: 0 0 15px 5px rgba(99, 102, 241, 0.4);
+
+  /* --- РђРќРРњРђР¦РРЇ (Р·РґРµСЃСЊ С‚РѕР»СЊРєРѕ РїРµСЂРµРјРµРЅРЅР°СЏ) --- */
+  --animate-fade-in-up: fade-in-up 0.5s ease-out;
+}
+
+/* 
+  3. РћРїРёСЃС‹РІР°РµРј СЃР°РјСѓ Р°РЅРёРјР°С†РёСЋ Р’РќР• Р±Р»РѕРєР° @theme.
+  Р­С‚Рѕ Р±РѕР»РµРµ Р±РµР·РѕРїР°СЃРЅС‹Р№ РїРѕРґС…РѕРґ, РєРѕС‚РѕСЂС‹Р№ СЂРµС€Р°РµС‚ РїСЂРѕР±Р»РµРјСѓ СЃ "Unclosed block".
+*/
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 4. РџСЂРёРјРµРЅСЏРµРј Р±Р°Р·РѕРІС‹Рµ СЃС‚РёР»Рё СЃ РїРѕРјРѕС‰СЊСЋ СЃС‚Р°РЅРґР°СЂС‚РЅРѕР№ С„СѓРЅРєС†РёРё var() */
+body {
+  background-color: var(--color-background-primary);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+}
+
+--- END OF FILE: frontend/src/app/globals.css ---
+
+
+--- START OF FILE: frontend/src/app/layout.js ---
+// # Р”РѕР±Р°РІР»СЏРµРј GameProvider РІ РєРѕСЂРЅРµРІРѕР№ РјР°РєРµС‚
+// src/app/layout.js
+
+import { Orbitron, Poppins } from "next/font/google";
+import { Inter } from "next/font/google";
+import "./globals.css";
+import { AuthProvider } from "@/hooks/useAuth";
+import { GameProvider } from "@/context/GameContext"; // РРјРїРѕСЂС‚РёСЂСѓРµРј РЅРѕРІС‹Р№ РїСЂРѕРІР°Р№РґРµСЂ
+import AuthGuard from "@/components/AuthGuard";
+
+const inter = Inter({ subsets: ["latin"] });
+
+// РќР°СЃС‚СЂРѕР№РєР° РѕСЃРЅРѕРІРЅРѕРіРѕ С€СЂРёС„С‚Р° (РґР»СЏ С‚РµРєСЃС‚Р°)
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["400", "500", "700"], // Р—Р°РіСЂСѓР¶Р°РµРј РЅРµСЃРєРѕР»СЊРєРѕ РЅР°С‡РµСЂС‚Р°РЅРёР№
+  variable: "--font-poppins", // Р—Р°РґР°РµРј CSS-РїРµСЂРµРјРµРЅРЅСѓСЋ
+});
+
+// РќР°СЃС‚СЂРѕР№РєР° РґРёСЃРїР»РµР№РЅРѕРіРѕ С€СЂРёС„С‚Р° (РґР»СЏ Р·Р°РіРѕР»РѕРІРєРѕРІ)
+const orbitron = Orbitron({
+  subsets: ["latin"],
+  weight: ["700"],
+  variable: "--font-orbitron", // Р—Р°РґР°РµРј CSS-РїРµСЂРµРјРµРЅРЅСѓСЋ
+});
+
+export const metadata = {
+  title: "Solo Mind Project",
+  description: "РџСЂРѕРєР°С‡Р°Р№ СЃРµР±СЏ, РєР°Рє РіРµСЂРѕСЏ РІ RPG",
+};
+
+export default function RootLayout({ children }) {
+  return (
+    <html lang="en">
+      {/* РџСЂРёРјРµРЅСЏРµРј РїРµСЂРµРјРµРЅРЅС‹Рµ С€СЂРёС„С‚РѕРІ РєРѕ РІСЃРµРјСѓ РїСЂРёР»РѕР¶РµРЅРёСЋ */}
+      <body className={`${poppins.variable} ${orbitron.variable} bg-background-primary text-text-primary font-sans`}>
+        <AuthProvider>
+          <GameProvider>
+            <AuthGuard>
+              {children}
+            </AuthGuard>
+          </GameProvider>
+        </AuthProvider>
+      </body>
+    </html>
+  );
+}
+
+--- END OF FILE: frontend/src/app/layout.js ---
+
+
+--- START OF FILE: frontend/src/app/page.js ---
+// frontend/src/app/page.js
+'use client';
+
+import LoginForm from "@/components/LoginForm";
+import { useAuth } from "@/hooks/useAuth";
+import Link from 'next/link'; // 1. РРјРїРѕСЂС‚РёСЂСѓРµРј Link
+
+export default function LoginPage() {
+  const { loading } = useAuth();
+
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center"><p>Р—Р°РіСЂСѓР·РєР°...</p></div>;
+  }
+
+  return (
+    <main className="min-h-screen flex flex-col items-center justify-center">
+      <div className="text-center mb-10">
+        {/* РСЃРїРѕР»СЊР·СѓРµРј С†РІРµС‚Р° Рё С€СЂРёС„С‚С‹ РёР· РЅР°С€РµР№ С‚РµРјС‹ */}
+        <h1 className="text-4xl font-display font-bold text-text-primary">Solo Mind</h1>
+        <p className="text-lg text-text-secondary mt-2">Р’РѕР№РґРё, С‡С‚РѕР±С‹ РЅР°С‡Р°С‚СЊ РїСЂРѕРєР°С‡РєСѓ</p>
+      </div>
+      <LoginForm />
+      
+      {/* 2. Р”РћР‘РђР’Р›РЇР•Рњ РЎРЎР«Р›РљРЈ РќРђ Р Р•Р“РРЎРўР РђР¦РР® */}
+      <div className="mt-4">
+        <p className="text-sm text-text-secondary">
+          Р•С‰Рµ РЅРµС‚ Р°РєРєР°СѓРЅС‚Р°?{' '}
+          <Link href="/signup" className="font-medium text-accent-primary hover:text-accent-primary/80 transition-colors">
+            РЎРѕР·РґР°С‚СЊ
+          </Link>
+        </p>
+      </div>
+    </main>
+  );
+}
+
+--- END OF FILE: frontend/src/app/page.js ---
+
+
+--- START OF FILE: frontend/src/app/calibrate/page.js ---
+'use client';
+import CalibrationForm from '@/components/CalibrationForm';
+import { useAuth } from '@/hooks/useAuth';
+
+export default function CalibrationPage() {
+  const { loading } = useAuth();
+
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center"><p>Р—Р°РіСЂСѓР·РєР°...</p></div>;
+  }
+
+  return (
+    <main className="min-h-screen flex flex-col items-center justify-center p-4">
+      <div className="text-center mb-10">
+        <h1 className="text-4xl font-bold text-white">РћР±СЂСЏРґ РРЅРёС†РёР°С†РёРё</h1>
+        <p className="text-lg text-gray-400 mt-2">РЎРёСЃС‚РµРјР° СЃРєР°РЅРёСЂСѓРµС‚ С‚РІРѕРё РїР°СЂР°РјРµС‚СЂС‹...</p>
+      </div>
+      <CalibrationForm />
+    </main>
+  );
+}
+
+--- END OF FILE: frontend/src/app/calibrate/page.js ---
+
+
+--- START OF FILE: frontend/src/app/dashboard/page.js ---
+'use client';
+
+import Dashboard from "@/components/Dashboard";
+import { useAuth } from "@/hooks/useAuth";
+
+export default function DashboardPage() {
+  const { loading } = useAuth();
+
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center"><p>Р—Р°РіСЂСѓР·РєР°...</p></div>;
+  }
+
+  return (
+    <main className="min-h-screen flex items-center justify-center p-4">
+      <Dashboard />
+    </main>
+  );
+}
+
+--- END OF FILE: frontend/src/app/dashboard/page.js ---
+
+
+--- START OF FILE: frontend/src/app/signup/page.js ---
+// frontend/src/app/signup/page.js
+'use client';
+
+import SignupForm from "@/components/SignupForm";
+import { useAuth } from "@/hooks/useAuth";
+import Link from 'next/link'; // 1. РРјРїРѕСЂС‚РёСЂСѓРµРј Link
+
+export default function SignupPage() {
+  const { loading } = useAuth();
+
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center"><p>Р—Р°РіСЂСѓР·РєР°...</p></div>;
+  }
+  
+  return (
+    <main className="min-h-screen flex flex-col items-center justify-center">
+      <div className="text-center mb-10">
+        {/* РСЃРїРѕР»СЊР·СѓРµРј С†РІРµС‚Р° Рё С€СЂРёС„С‚С‹ РёР· РЅР°С€РµР№ С‚РµРјС‹ */}
+        <h1 className="text-4xl font-display font-bold text-text-primary">РЎРѕР·РґР°С‚СЊ Р“РµСЂРѕСЏ</h1>
+        <p className="text-lg text-text-secondary mt-2">РџСЂРѕР№РґРё СЂРµРіРёСЃС‚СЂР°С†РёСЋ Рё РЅР°С‡РЅРё СЃРІРѕР№ РїСѓС‚СЊ</p>
+      </div>
+      <SignupForm />
+      
+      {/* 2. Р”РћР‘РђР’Р›РЇР•Рњ РЎРЎР«Р›РљРЈ РќРђ РЎРўР РђРќРР¦РЈ Р’РҐРћР”Рђ */}
+      <div className="mt-4">
+        <p className="text-sm text-text-secondary">
+          РЈР¶Рµ РµСЃС‚СЊ Р°РєРєР°СѓРЅС‚?{' '}
+          <Link href="/" className="font-medium text-accent-secondary hover:text-accent-secondary/80 transition-colors">
+            Р’РѕР№С‚Рё
+          </Link>
+        </p>
+      </div>
+    </main>
+  );
+}
+
+--- END OF FILE: frontend/src/app/signup/page.js ---
+
+
+--- START OF FILE: frontend/src/components/AuthGuard.js ---
+// components/AuthGuard.js
+"use client";
+
+import { useAuth } from '../hooks/useAuth';
+import { useRouter, usePathname } from 'next/navigation';
+import { useEffect } from 'react';
+
+const PROTECTED_ROUTES = ['/dashboard'];
+const PUBLIC_ONLY_ROUTES = ['/login', '/signup', '/'];
+
+const AuthGuard = ({ children }) => {
+  const { token, loading } = useAuth();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  // РРЎРџР РђР’Р›Р•РќРР•: РћР±СЉСЏРІР»СЏРµРј РїРµСЂРµРјРµРЅРЅС‹Рµ Р·РґРµСЃСЊ, С‡С‚РѕР±С‹ РѕРЅРё Р±С‹Р»Рё РІРёРґРЅС‹ РІСЃРµРјСѓ РєРѕРјРїРѕРЅРµРЅС‚Сѓ.
+  const isProtectedRoute = PROTECTED_ROUTES.includes(pathname);
+  const isPublicOnlyRoute = PUBLIC_ONLY_ROUTES.includes(pathname);
+
+  useEffect(() => {
+    if (loading) {
+      return;
+    }
+
+    // РўРµРїРµСЂСЊ РїСЂРѕСЃС‚Рѕ РёСЃРїРѕР»СЊР·СѓРµРј РїРµСЂРµРјРµРЅРЅС‹Рµ, РєРѕС‚РѕСЂС‹Рµ СѓР¶Рµ РѕР±СЉСЏРІР»РµРЅС‹ РІС‹С€Рµ.
+    if (!token && isProtectedRoute) {
+      router.push('/');
+    }
+
+    if (token && isPublicOnlyRoute) {
+      router.push('/dashboard');
+    }
+    // Р”РѕР±Р°РІР»СЏРµРј РїРµСЂРµРјРµРЅРЅС‹Рµ РІ РјР°СЃСЃРёРІ Р·Р°РІРёСЃРёРјРѕСЃС‚РµР№ РґР»СЏ РєРѕСЂСЂРµРєС‚РЅРѕР№ СЂР°Р±РѕС‚С‹
+  }, [token, loading, pathname, router, isProtectedRoute, isPublicOnlyRoute]);
+
+  // РўРµРїРµСЂСЊ СЌС‚Р° СЃС‚СЂРѕРєР° Р±СѓРґРµС‚ СЂР°Р±РѕС‚Р°С‚СЊ, С‚Р°Рє РєР°Рє РѕРЅР° "РІРёРґРёС‚" isProtectedRoute Рё isPublicOnlyRoute
+  if (loading || (!token && isProtectedRoute) || (token && isPublicOnlyRoute)) {
+    return <div className="flex items-center justify-center h-screen bg-gray-900 text-white">РџСЂРѕРІРµСЂРєР° РґРѕСЃС‚СѓРїР°...</div>;
+  }
+
+  return children;
+};
+
+export default AuthGuard;
+
+--- END OF FILE: frontend/src/components/AuthGuard.js ---
+
+
+--- START OF FILE: frontend/src/components/CalibrationForm.js ---
+'use client';
+import { useState } from 'react';
+import axios from 'axios';
+import { useRouter } from 'next/navigation';
+
+export default function CalibrationForm() {
+  const router = useRouter();
+  const [answers, setAnswers] = useState({ q1: '', q2: '' });
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const questions = [
+    { id: 'q1', text: 'Р§С‚Рѕ РґР»СЏ С‚РµР±СЏ РІР°Р¶РЅРµРµ РІ СЂР°Р·РІРёС‚РёРё?', options: ['Р¤РёР·РёС‡РµСЃРєР°СЏ СЃРёР»Р°', 'РЎРёР»Р° СЂР°Р·СѓРјР°'] },
+    { id: 'q2', text: 'РљР°РєРѕР№ РїРѕРґС…РѕРґ Рє С‚СЂРµРЅРёСЂРѕРІРєР°Рј С‚РµР±Рµ Р±Р»РёР¶Рµ?', options: ['Р’Р·СЂС‹РІРЅР°СЏ РјРѕС‰СЊ', 'РќРµСЃРіРёР±Р°РµРјР°СЏ РІС‹РЅРѕСЃР»РёРІРѕСЃС‚СЊ'] },
+  ];
+
+  const handleAnswer = (questionId, option) => {
+    setAnswers(prev => ({ ...prev, [questionId]: option }));
+  };
+
+  const handleSubmit = async () => {
+    if (!answers.q1 || !answers.q2) {
+      setError('РќСѓР¶РЅРѕ РѕС‚РІРµС‚РёС‚СЊ РЅР° РІСЃРµ РІРѕРїСЂРѕСЃС‹.');
+      return;
+    }
+    setLoading(true);
+    setError('');
+
+    try {
+      const token = localStorage.getItem('solo-mind-token');
+      // РћС‚РїСЂР°РІР»СЏРµРј РѕС‚РІРµС‚С‹ РЅР° РЅРѕРІС‹Р№ СЌРЅРґРїРѕРёРЅС‚
+      await axios.post(
+        'http://localhost:3001/auth/calibrate',
+        { answers },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      
+      // РџРѕСЃР»Рµ СѓСЃРїРµС€РЅРѕР№ РєР°Р»РёР±СЂРѕРІРєРё РѕС‚РїСЂР°РІР»СЏРµРј РЅР° РґСЌС€Р±РѕСЂРґ
+      router.push('/dashboard');
+
+    } catch (err) {
+      console.error('РћС€РёР±РєР° РєР°Р»РёР±СЂРѕРІРєРё:', err);
+      setError(err.response?.data?.message || 'РџСЂРѕРёР·РѕС€Р»Р° РѕС€РёР±РєР°');
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="w-full max-w-2xl p-8 bg-gray-900 rounded-lg">
+      {questions.map((q, index) => (
+        <div key={q.id} className="mb-8">
+          <p className="font-semibold mb-4">{index + 1}. {q.text}</p>
+          <div className="flex gap-4">
+            {q.options.map(option => (
+              <button
+                key={option}
+                onClick={() => handleAnswer(q.id, option)}
+                className={`flex-1 p-4 rounded-lg transition-colors ${
+                  answers[q.id] === option
+                    ? 'bg-purple-600 text-white ring-2 ring-purple-400'
+                    : 'bg-gray-800 hover:bg-gray-700'
+                }`}
+              >
+                {option}
+              </button>
+            ))}
+          </div>
+        </div>
+      ))}
+      
+      {error && <p className="text-red-500 text-center my-4">{error}</p>}
+
+      <button
+        onClick={handleSubmit}
+        disabled={loading || !answers.q1 || !answers.q2}
+        className="w-full py-3 mt-4 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg disabled:bg-gray-500"
+      >
+        {loading ? 'РљР°Р»РёР±СЂРѕРІРєР°...' : 'Р—Р°РІРµСЂС€РёС‚СЊ РРЅРёС†РёР°С†РёСЋ'}
+      </button>
+    </div>
+  );
+}
+
+--- END OF FILE: frontend/src/components/CalibrationForm.js ---
+
+
+--- START OF FILE: frontend/src/components/Dashboard.js ---
+// # Р РµС„Р°РєС‚РѕСЂРёРј Dashboard РґР»СЏ РёСЃРїРѕР»СЊР·РѕРІР°РЅРёСЏ GameContext Рё СѓРїСЂРѕС‰РµРЅРёСЏ Р»РѕРіРёРєРё
+// components/Dashboard.js
+"use client";
+
+import { useState } from 'react';
+import { useAuth } from '../hooks/useAuth';
+import { useGame, GAME_STATES } from '../context/GameContext'; // РРјРїРѕСЂС‚РёСЂСѓРµРј РєРѕРЅС‚РµРєСЃС‚ Рё СЃРѕСЃС‚РѕСЏРЅРёСЏ
+import { calculateXpForLevel } from '../utils/gameLogic';
+
+import TrainingMode from './TrainingMode';
+import ImageUploader from './ImageUploader';
+import EnduranceGate from './EnduranceGate';
+import QuizComponent from './QuizComponent'; // РРјРїРѕСЂС‚РёСЂСѓРµРј РЅРѕРІС‹Р№ РєРѕРјРїРѕРЅРµРЅС‚
+
+const Dashboard = () => {
+  // # РџРѕР»СѓС‡Р°РµРј РґР°РЅРЅС‹Рµ РёР· AuthContext
+  const { profile, user, logout } = useAuth();
+  // # РџРѕР»СѓС‡Р°РµРј СЃРѕСЃС‚РѕСЏРЅРёРµ Рё С„СѓРЅРєС†РёРё СѓРїСЂР°РІР»РµРЅРёСЏ РёР· GameContext
+  const { gameState, startReading, handleQuizReady, handleCycleComplete } = useGame();
+  
+  // # Р›РѕРєР°Р»СЊРЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ РґР»СЏ РјРѕРґР°Р»СЊРЅРѕРіРѕ РѕРєРЅР° РѕСЃС‚Р°РµС‚СЃСЏ Р·РґРµСЃСЊ
+  const [isTrainingModalOpen, setIsTrainingModalOpen] = useState(false);
+
+  if (!profile || !user) {
+    return <div className="flex items-center justify-center h-screen bg-background-primary text-text-primary">Р—Р°РіСЂСѓР·РєР° РїСЂРѕС„РёР»СЏ...</div>;
+  }
+
+  // # Р’СЃРїРѕРјРѕРіР°С‚РµР»СЊРЅР°СЏ С„СѓРЅРєС†РёСЏ РґР»СЏ СЂРµРЅРґРµСЂРёРЅРіР° РґРёРЅР°РјРёС‡РµСЃРєРѕР№ С‡Р°СЃС‚Рё
+  const renderGameComponent = () => {
+    switch (gameState) {
+      case GAME_STATES.UPLOADING:
+        // # РџРµСЂРµРґР°РµРј С„СѓРЅРєС†РёСЋ РёР· РєРѕРЅС‚РµРєСЃС‚Р° РІ РїСЂРѕРїСЃ
+        return <ImageUploader onQuizReady={handleQuizReady} />;
+      case GAME_STATES.QUIZ:
+        // # QuizComponent С‚РµРїРµСЂСЊ РЅРµ С‚СЂРµР±СѓРµС‚ РїСЂРѕРїСЃРѕРІ, РѕРЅ СЃР°РјРѕРґРѕСЃС‚Р°С‚РѕС‡РµРЅ
+        return <QuizComponent />;
+      case GAME_STATES.EXERCISE:
+        // # РџРµСЂРµРґР°РµРј С„СѓРЅРєС†РёСЋ РёР· РєРѕРЅС‚РµРєСЃС‚Р° РІ РїСЂРѕРїСЃ
+        return <EnduranceGate onCycleComplete={handleCycleComplete} />;
+      case GAME_STATES.PROFILE:
+      default:
+        // # Р’ СЃРѕСЃС‚РѕСЏРЅРёРё PROFILE РЅРёС‡РµРіРѕ РЅРµ СЂРµРЅРґРµСЂРёРј РІ СЌС‚РѕР№ РѕР±Р»Р°СЃС‚Рё
+        return null;
+    }
+  };
+
+  const xpToNextLevel = calculateXpForLevel(profile.level);
+
+  return (
+    <div className="min-h-screen w-full flex flex-col items-center justify-center p-4 gap-8">
+      <div className="p-6 max-w-4xl w-full mx-auto bg-background-secondary/70 backdrop-blur-md text-text-primary rounded-2xl shadow-2xl border border-accent-primary/30">
+        <div className="flex justify-between items-center mb-6 border-b border-accent-primary/20 pb-4">
+          <h1 className="font-display text-3xl font-bold text-text-primary">РџСЂРѕС„РёР»СЊ: {user.name}</h1>
+          <div className="flex items-center gap-4">
+            {/* # РР—РњР•РќР•РќРР•: РџСЂРёРјРµРЅСЏРµРј РєР»Р°СЃСЃС‹ РЅР°РїСЂСЏРјСѓСЋ */}
+            <button onClick={() => setIsTrainingModalOpen(true)} className="py-2 px-4 rounded-lg font-semibold text-white bg-success hover:bg-success/80 transition-colors">РўСЂРµРЅРёСЂРѕРІРєР°</button>
+            <button onClick={logout} className="py-2 px-4 rounded-lg font-semibold text-white bg-danger hover:bg-danger/80 transition-colors">Р’С‹С…РѕРґ</button>
+          </div>
+        </div>
+
+        {gameState === GAME_STATES.PROFILE && (
+          <div className="text-center bg-background-primary/50 p-6 rounded-lg mb-6">
+            <h2 className="font-display text-xl font-semibold mb-4">РћСЃРЅРѕРІРЅРѕР№ Р¦РёРєР»</h2>
+            {/* # РР—РњР•РќР•РќРР•: РџСЂРёРјРµРЅСЏРµРј РєР»Р°СЃСЃС‹ РЅР°РїСЂСЏРјСѓСЋ */}
+            <button 
+              onClick={startReading} 
+              disabled={!profile.isReadingUnlocked} 
+              className="
+                py-3 px-8 rounded-lg font-semibold text-white bg-accent-primary shadow-lg 
+                transition-all duration-300 ease-in-out
+                hover:shadow-glow-primary hover:-translate-y-0.5
+                disabled:bg-background-secondary disabled:text-text-secondary disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none
+              "
+            >
+              РќР°С‡Р°С‚СЊ С‡С‚РµРЅРёРµ
+            </button>
+            {!profile.isReadingUnlocked && <p className="text-xs text-accent-gold mt-2">Р§С‚РѕР±С‹ РїСЂРѕРґРѕР»Р¶РёС‚СЊ, Р·Р°РІРµСЂС€РёС‚Рµ С„РёР·РёС‡РµСЃРєРѕРµ СѓРїСЂР°Р¶РЅРµРЅРёРµ.</p>}
+          </div>
+        )}
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-2 gap-4">
+            <StatCard name="РЎРёР»Р° (STR)" value={profile.statStr} color="text-danger" />
+            <StatCard name="Р’С‹РЅРѕСЃР»РёРІРѕСЃС‚СЊ (END)" value={profile.statEnd} color="text-success" />
+            <StatCard name="РРЅС‚РµР»Р»РµРєС‚ (INT)" value={profile.statInt} color="text-accent-secondary" />
+            <StatCard name="РњСѓРґСЂРѕСЃС‚СЊ (WIS)" value={profile.statWis} color="text-accent-primary" />
+          </div>
+          <div className="space-y-4">
+            <div>
+              <p className="text-sm text-text-secondary mb-1">РЈСЂРѕРІРµРЅСЊ {profile.level} | РћРїС‹С‚ (XP): {profile.currentXp} / {xpToNextLevel}</p>
+              <progress className="w-full [&::-webkit-progress-bar]:rounded-lg [&::-webkit-progress-value]:rounded-lg [&::-webkit-progress-bar]:bg-background-primary [&::-webkit-progress-value]:bg-accent-primary [&::-moz-progress-bar]:bg-accent-primary" value={profile.currentXp} max={xpToNextLevel}></progress>
+            </div>
+            <div className="bg-background-primary/50 p-3 rounded-lg">
+              <h3 className="font-display font-bold mb-2 text-text-secondary">РњС‹С€РµС‡РЅРѕРµ РќР°РїСЂСЏР¶РµРЅРёРµ</h3>
+              {user.muscleTension && Object.keys(user.muscleTension).length > 0 ? (
+                <ul className="text-sm space-y-1">
+                  {Object.entries(user.muscleTension).map(([group, value]) => (
+                    <li key={group}><span className="capitalize font-semibold">{group}:</span> {Math.floor(value)}</li>
+                  ))}
+                </ul>
+              ) : <p className="text-sm text-text-secondary">Р’СЃРµ РјС‹С€РµС‡РЅС‹Рµ РіСЂСѓРїРїС‹ РІРѕСЃСЃС‚Р°РЅРѕРІР»РµРЅС‹.</p>}
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      {gameState !== GAME_STATES.PROFILE && (
+        <div key={gameState} className="w-full max-w-2xl animate-fade-in-up">
+           {renderGameComponent()}
+        </div>
+      )}
+
+      {isTrainingModalOpen && <TrainingMode onClose={() => setIsTrainingModalOpen(false)} />}
+    </div>
+  );
+};
+
+const StatCard = ({ name, value, color }) => (
+  <div className="p-4 bg-background-primary/50 rounded-lg text-center border border-white/10">
+    <p className={`font-display font-bold ${color}`}>{name}</p>
+    <p className="text-4xl font-sans font-light">{value}</p>
+  </div>
+);
+
+export default Dashboard;
+
+--- END OF FILE: frontend/src/components/Dashboard.js ---
+
+
+--- START OF FILE: frontend/src/components/EnduranceGate.js ---
+// components/EnduranceGate.js
+"use client";
+
+import { useState, useMemo } from 'react';
+import { useAuth } from '../hooks/useAuth';
+import { useGame } from '@/context/GameContext';
+import { getRecommendedReps } from '../utils/gameLogic';
+import axios from 'axios';
+
+const exercisesDB = [
+  { id: 1, name: 'РћС‚Р¶РёРјР°РЅРёСЏ', group: 'push' },
+  { id: 2, name: 'РџРѕРґС‚СЏРіРёРІР°РЅРёСЏ', group: 'pull' },
+  { id: 3, name: 'РџСЂРёСЃРµРґР°РЅРёСЏ', group: 'legs' },
+];
+const API_URL = 'http://localhost:3001';
+
+const EnduranceGate = () => {
+  const { profile, token, updateUserAndProfile } = useAuth();
+  const { handleCycleComplete } = useGame();
+  const [exerciseId, setExerciseId] = useState(exercisesDB[0].id);
+  const [reps, setReps] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const recommendedReps = useMemo(() => (profile ? getRecommendedReps(profile.level, profile.statEnd) : 0), [profile]);
+  const minReps = Math.floor(recommendedReps * 0.3);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!reps || reps <= 0) return;
+    setIsLoading(true);
+    try {
+      const response = await axios.post(
+        `${API_URL}/activity/exercise`,
+        { exerciseId: parseInt(exerciseId), reps: parseInt(reps), isTrainingMode: false },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      updateUserAndProfile(response.data);
+      handleCycleComplete();
+    } catch (err) {
+      setError(err.response?.data?.message || 'РџСЂРѕРёР·РѕС€Р»Р° РЅРµРёР·РІРµСЃС‚РЅР°СЏ РѕС€РёР±РєР°.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (!profile) return <div>Р—Р°РіСЂСѓР·РєР°...</div>;
+
+  return (
+    <div className="w-full p-8 space-y-6 bg-background-secondary/70 backdrop-blur-md rounded-lg shadow-xl border border-accent-primary/20 text-text-primary">
+      <h1 className="text-2xl font-display font-bold text-center">РЁР°Рі 3: Р—Р°РєСЂРµРїР»РµРЅРёРµ Р—РЅР°РЅРёР№</h1>
+      <p className="text-center text-text-secondary">Р’С‹РїРѕР»РЅРёС‚Рµ СѓРїСЂР°Р¶РЅРµРЅРёРµ, С‡С‚РѕР±С‹ РїРѕР»СѓС‡РёС‚СЊ РѕРїС‹С‚ Рё СЂР°Р·Р±Р»РѕРєРёСЂРѕРІР°С‚СЊ СЃР»РµРґСѓСЋС‰РµРµ С‡С‚РµРЅРёРµ.</p>
+      
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div>
+          <label htmlFor="exercise" className="block text-sm font-medium text-text-secondary">Р’С‹Р±РµСЂРёС‚Рµ СѓРїСЂР°Р¶РЅРµРЅРёРµ</label>
+          {/* --- РР—РњР•РќР•РќРќР«Р• РЎРўРР›Р Р”Р›РЇ SELECT --- */}
+          <select id="exercise" value={exerciseId} onChange={(e) => setExerciseId(e.target.value)} className="mt-1 block w-full px-3 py-2 bg-background-primary border border-text-secondary/30 rounded-md focus:ring-accent-primary focus:border-accent-primary transition">
+            {exercisesDB.map(ex => <option key={ex.id} value={ex.id}>{ex.name}</option>)}
+          </select>
+        </div>
+        <div>
+          <label htmlFor="reps" className="block text-sm font-medium text-text-secondary">РљРѕР»РёС‡РµСЃС‚РІРѕ РїРѕРІС‚РѕСЂРµРЅРёР№</label>
+          {/* --- РР—РњР•РќР•РќРќР«Р• РЎРўРР›Р Р”Р›РЇ РРќР¤Рћ-РўР•РљРЎРўРђ --- */}
+          <p className="text-xs text-text-secondary">
+            Р РµРєРѕРјРµРЅРґРѕРІР°РЅРѕ: <span className="font-bold text-accent-gold">{recommendedReps}</span>. 
+            (РњРёРЅРёРјСѓРј РґР»СЏ Р·Р°С‡РµС‚Р°: <span className="font-bold text-accent-gold">{minReps}</span>)
+          </p>
+          {/* --- РР—РњР•РќР•РќРќР«Р• РЎРўРР›Р Р”Р›РЇ INPUT --- */}
+          <input id="reps" type="number" value={reps} onChange={(e) => setReps(e.target.value)} placeholder="Р’РІРµРґРёС‚Рµ РєРѕР»РёС‡РµСЃС‚РІРѕ" className="mt-1 block w-full px-3 py-2 bg-background-primary border border-text-secondary/30 rounded-md focus:ring-accent-primary focus:border-accent-primary transition" required />
+        </div>
+        {error && <p className="text-sm text-danger text-center">{error}</p>}
+        <div>
+          {/* --- РР—РњР•РќР•РќРќР«Р• РЎРўРР›Р Р”Р›РЇ РљРќРћРџРљР --- */}
+          <button 
+            type="submit" 
+            disabled={isLoading} 
+            className="
+              w-full flex justify-center py-3 px-4 rounded-md text-sm font-medium text-white bg-accent-primary shadow-lg 
+              transition-all duration-300 ease-in-out
+              hover:shadow-glow-primary hover:-translate-y-0.5
+              disabled:bg-background-secondary disabled:text-text-secondary disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none
+            "
+          >
+            {isLoading ? 'РЎРѕС…СЂР°РЅРµРЅРёРµ...' : 'Р—Р°РІРµСЂС€РёС‚СЊ Рё РїРѕР»СѓС‡РёС‚СЊ XP'}
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+};
+
+export default EnduranceGate;
+
+--- END OF FILE: frontend/src/components/EnduranceGate.js ---
+
+
+--- START OF FILE: frontend/src/components/ImageUploader.js ---
+// components/ImageUploader.js
+"use client";
+
+import { useState } from 'react';
+import { useAuth } from '../hooks/useAuth';
+import { useGame } from '../context/GameContext'; // РРјРїРѕСЂС‚РёСЂСѓРµРј, С‡С‚РѕР±С‹ РїРѕР»СѓС‡РёС‚СЊ onQuizReady
+import axios from 'axios';
+
+const API_URL = 'http://localhost:3001';
+
+const ImageUploader = () => {
+  const { token } = useAuth();
+  const { handleQuizReady } = useGame(); // РџРѕР»СѓС‡Р°РµРј С„СѓРЅРєС†РёСЋ РёР· РєРѕРЅС‚РµРєСЃС‚Р°
+  const [file, setFile] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!file) {
+      setError('РџРѕР¶Р°Р»СѓР№СЃС‚Р°, РІС‹Р±РµСЂРёС‚Рµ С„Р°Р№Р» РґР»СЏ Р·Р°РіСЂСѓР·РєРё.');
+      return;
+    }
+    setError('');
+    setIsLoading(true);
+    const formData = new FormData();
+    formData.append('image', file);
+    try {
+      const response = await axios.post(`${API_URL}/ocr/upload-and-process`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${token}` },
+      });
+      handleQuizReady(response.data); // РСЃРїРѕР»СЊР·СѓРµРј С„СѓРЅРєС†РёСЋ РёР· РєРѕРЅС‚РµРєСЃС‚Р°
+    } catch (err) {
+      setError(err.response?.data?.message || 'РџСЂРѕРёР·РѕС€Р»Р° РѕС€РёР±РєР° РїСЂРё РѕР±СЂР°Р±РѕС‚РєРµ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="w-full p-8 space-y-6 bg-background-secondary/70 backdrop-blur-md rounded-lg shadow-xl border border-accent-primary/20 text-text-primary">
+      <h1 className="text-2xl font-display font-bold text-center">РЁР°Рі 1: Р—Р°РіСЂСѓР·РєР° Р—РЅР°РЅРёР№</h1>
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div>
+          <label htmlFor="image-upload" className="block text-sm font-medium text-text-secondary">
+            Р’С‹Р±РµСЂРёС‚Рµ СЃРєСЂРёРЅС€РѕС‚ СЃС‚СЂР°РЅРёС†С‹
+          </label>
+          <input
+            id="image-upload" type="file" accept="image/*" onChange={handleFileChange}
+            className="mt-1 block w-full text-sm text-text-secondary file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-accent-primary/20 file:text-accent-primary hover:file:bg-accent-primary/30"
+          />
+        </div>
+        {error && <p className="text-sm text-danger text-center">{error}</p>}
+        <div>
+          <button
+            type="submit" disabled={isLoading || !file}
+            className="w-full flex justify-center py-3 px-4 rounded-md text-sm font-medium text-white bg-accent-primary shadow-lg transition-all duration-300 ease-in-out hover:shadow-glow-primary hover:-translate-y-0.5 disabled:bg-background-secondary disabled:text-text-secondary disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
+          >
+            {isLoading ? 'РђРЅР°Р»РёР· С‚РµРєСЃС‚Р°...' : 'РЎРіРµРЅРµСЂРёСЂРѕРІР°С‚СЊ РєРІРёР·'}
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+};
+
+export default ImageUploader;
+
+--- END OF FILE: frontend/src/components/ImageUploader.js ---
+
+
+--- START OF FILE: frontend/src/components/LoginForm.js ---
+// components/LoginForm.js
+"use client";
+
+import { useState } from 'react';
+import { useAuth } from '../hooks/useAuth';
+import { useRouter } from 'next/navigation';
+
+const LoginForm = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const auth = useAuth();
+  const router = useRouter();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    try {
+      await auth.login(email, password);
+      router.push('/dashboard');
+    } catch (err) {
+      setError(err.response?.data?.message || 'РџСЂРѕРёР·РѕС€Р»Р° РѕС€РёР±РєР° РїСЂРё РІС…РѕРґРµ');
+    }
+  };
+
+  return (
+    <div className="w-full max-w-md p-8 space-y-6 bg-background-secondary rounded-2xl shadow-xl text-text-primary border border-accent-primary/20">
+      <h1 className="text-3xl font-display font-bold text-center">Р’С…РѕРґ РІ Solo Mind</h1>
+      
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div>
+          <label htmlFor="email" className="block text-sm font-medium text-text-secondary">Email</label>
+          <input 
+            id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required 
+            className="mt-1 block w-full px-3 py-2 bg-background-primary border border-text-secondary/30 rounded-md focus:outline-none focus:ring-2 focus:ring-accent-primary focus:border-transparent transition"
+          />
+        </div>
+        
+        <div>
+          <label htmlFor="password" className="block text-sm font-medium text-text-secondary">РџР°СЂРѕР»СЊ</label>
+          <input 
+            id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required 
+            className="mt-1 block w-full px-3 py-2 bg-background-primary border border-text-secondary/30 rounded-md focus:outline-none focus:ring-2 focus:ring-accent-primary focus:border-transparent transition"
+          />
+        </div>
+        
+        {error && <p className="text-sm text-danger text-center">{error}</p>}
+        
+        <div>
+          <button 
+            type="submit" disabled={auth.loading} 
+            className="
+              w-full flex justify-center py-3 px-4 rounded-md text-sm font-medium text-white bg-accent-primary shadow-lg 
+              transition-all duration-300 ease-in-out
+              hover:shadow-glow-primary hover:-translate-y-0.5
+              disabled:bg-background-secondary disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none
+            "
+          >
+            {auth.loading ? 'Р’С…РѕРґ...' : 'Р’РѕР№С‚Рё'}
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+};
+
+export default LoginForm;
+
+--- END OF FILE: frontend/src/components/LoginForm.js ---
+
+
+--- START OF FILE: frontend/src/components/QuizComponent.js ---
+// src/components/QuizComponent.js
+"use client";
+
+import { useState } from 'react';
+import { useAuth } from '@/hooks/useAuth';
+import { useGame } from '@/context/GameContext';
+import axios from 'axios';
+
+const API_URL = 'http://localhost:3001';
+
+const QuizComponent = () => {
+  const { token, updateUserAndProfile } = useAuth();
+  const { quizData, handleQuizSuccess } = useGame();
+
+  const [selectedAnswer, setSelectedAnswer] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [isCorrect, setIsCorrect] = useState(null);
+
+  const getButtonClass = (option) => {
+    // РџРѕСЃР»Рµ РїСЂРѕРІРµСЂРєРё РѕС‚РІРµС‚Р°, РїРѕРґСЃРІРµС‡РёРІР°РµРј РїСЂР°РІРёР»СЊРЅС‹Р№ Рё РЅРµРїСЂР°РІРёР»СЊРЅС‹Р№
+    if (isCorrect !== null) {
+      if (option === quizData.correctAnswer) return 'bg-success scale-105'; // РџСЂР°РІРёР»СЊРЅС‹Р№ РѕС‚РІРµС‚ РІСЃРµРіРґР° РІС‹РґРµР»СЏРµС‚СЃСЏ
+      if (option === selectedAnswer) return 'bg-danger'; // РќРµРїСЂР°РІРёР»СЊРЅРѕ РІС‹Р±СЂР°РЅРЅС‹Р№
+      return 'bg-background-primary opacity-50'; // РћСЃС‚Р°Р»СЊРЅС‹Рµ РїСЂРёРіР»СѓС€Р°СЋС‚СЃСЏ
+    }
+    // Р’ РїСЂРѕС†РµСЃСЃРµ РІС‹Р±РѕСЂР°
+    if (selectedAnswer === option) {
+      return 'bg-accent-primary transform-none'; // Р’С‹Р±СЂР°РЅРЅС‹Р№ РѕС‚РІРµС‚ "СѓС‚РѕРїР»РµРЅ"
+    }
+    // РЎС‚Р°РЅРґР°СЂС‚РЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ СЃ С…РѕРІРµСЂРѕРј
+    return 'bg-background-primary hover:bg-background-primary/70 hover:-translate-y-0.5';
+  };
+
+  const handleSubmit = async () => {
+    if (selectedAnswer === null) return;
+    setIsLoading(true);
+    setError('');
+
+    const isAnswerCorrect = selectedAnswer === quizData.correctAnswer;
+    setIsCorrect(isAnswerCorrect);
+
+    if (isAnswerCorrect) {
+      try {
+        const response = await axios.post(`${API_URL}/activity/submit-quiz`, {}, { headers: { Authorization: `Bearer ${token}` } });
+        updateUserAndProfile(response.data);
+        setTimeout(() => handleQuizSuccess(), 2000);
+      } catch (err) {
+        setError(err.response?.data?.message || 'РћС€РёР±РєР°');
+        setIsLoading(false);
+      }
+    } else {
+      setTimeout(() => {
+        setIsCorrect(null);
+        setSelectedAnswer(null);
+        setIsLoading(false);
+      }, 2000);
+    }
+  };
+
+  if (!quizData) return <p>Р—Р°РіСЂСѓР·РєР° РґР°РЅРЅС‹С… РєРІРёР·Р°...</p>;
+
+  return (
+    <div className="w-full p-8 space-y-6 bg-background-secondary/70 backdrop-blur-md rounded-lg shadow-xl border border-accent-primary/20 text-text-primary">
+      <h1 className="text-2xl font-display font-bold text-center">РЁР°Рі 2: РџСЂРѕРІРµСЂРєР° Р—РЅР°РЅРёР№</h1>
+      <div className="p-4 bg-background-primary rounded-lg">
+        <p className="text-lg font-semibold">{quizData.question}</p>
+      </div>
+      <div className="space-y-4"> {/* РЈРІРµР»РёС‡РёР»Рё РѕС‚СЃС‚СѓРї РґР»СЏ РєСЂР°СЃРѕС‚С‹ */}
+        {quizData.options.map((option, index) => (
+          <button
+            key={index}
+            onClick={() => !isLoading && isCorrect === null && setSelectedAnswer(option)}
+            disabled={isLoading || isCorrect !== null}
+            className={`w-full p-4 text-left rounded-lg transition-all duration-200 shadow-md disabled:opacity-100 ${getButtonClass(option)}`}
+          >
+            {option}
+          </button>
+        ))}
+      </div>
+      {error && <p className="text-sm text-danger text-center">{error}</p>}
+      {isCorrect !== null && <p className={`text-center font-bold ${isCorrect ? 'text-success' : 'text-danger'}`}>{isCorrect ? 'Р’РµСЂРЅРѕ! РџРµСЂРµС…РѕРґРёРј Рє СЃР»РµРґСѓСЋС‰РµРјСѓ С€Р°РіСѓ...' : 'РќРµРІРµСЂРЅРѕ. РџРѕРїСЂРѕР±СѓР№С‚Рµ РµС‰Рµ СЂР°Р·.'}</p>}
+      <div className="pt-2">
+        <button
+          onClick={handleSubmit}
+          disabled={isLoading || selectedAnswer === null || isCorrect !== null}
+          className="
+            w-full flex justify-center py-3 px-4 rounded-md text-sm font-medium text-white bg-accent-primary shadow-lg 
+            transition-all duration-300 ease-in-out
+            hover:shadow-glow-primary hover:-translate-y-0.5
+            disabled:bg-background-secondary disabled:text-text-secondary disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none
+          "
+        >
+          {isLoading ? 'РџСЂРѕРІРµСЂРєР°...' : 'РћС‚РІРµС‚РёС‚СЊ'}
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default QuizComponent;
+
+--- END OF FILE: frontend/src/components/QuizComponent.js ---
+
+
+--- START OF FILE: frontend/src/components/SignupForm.js ---
+// components/SignupForm.js
+'use client';
+
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import axios from 'axios';
+import { useAuth } from '@/hooks/useAuth';
+
+export default function SignupForm() {
+    const router = useRouter(); 
+    const auth = useAuth();
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setError('');
+        setLoading(true);
+        try {
+            await axios.post('http://localhost:3001/auth/signup', { name, email, password });
+            await auth.login(email, password);
+            router.push('/dashboard');
+        } catch (err) {
+            setError(err.response?.data?.message || 'РќРµ СѓРґР°Р»РѕСЃСЊ РїРѕРґРєР»СЋС‡РёС‚СЊСЃСЏ Рє СЃРµСЂРІРµСЂСѓ');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+      <div className="w-full max-w-md p-8 space-y-6 bg-background-secondary rounded-2xl shadow-xl text-text-primary border border-accent-secondary/20">
+        <h1 className="text-3xl font-display font-bold text-center">РЎРѕР·РґР°С‚СЊ РђРєРєР°СѓРЅС‚</h1>
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label htmlFor="name" className="block text-sm font-medium text-text-secondary">РРјСЏ Р“РµСЂРѕСЏ</label>
+            <input
+              id="name" type="text" required value={name} onChange={(e) => setName(e.target.value)}
+              className="mt-1 block w-full px-3 py-2 bg-background-primary border border-text-secondary/30 rounded-md focus:outline-none focus:ring-2 focus:ring-accent-secondary focus:border-transparent transition"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-text-secondary">Email</label>
+            <input
+              id="email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)}
+              className="mt-1 block w-full px-3 py-2 bg-background-primary border border-text-secondary/30 rounded-md focus:outline-none focus:ring-2 focus:ring-accent-secondary focus:border-transparent transition"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="password" className="block text-sm font-medium text-text-secondary">РџР°СЂРѕР»СЊ</label>
+            <input
+              id="password" type="password" required minLength="6" value={password} onChange={(e) => setPassword(e.target.value)}
+              className="mt-1 block w-full px-3 py-2 bg-background-primary border border-text-secondary/30 rounded-md focus:outline-none focus:ring-2 focus:ring-accent-secondary focus:border-transparent transition"
+            />
+          </div>
+
+          {error && <p className="text-sm text-danger text-center">{error}</p>}
+
+          <div>
+            <button
+              type="submit" disabled={loading}
+              className="
+                w-full flex justify-center py-3 px-4 rounded-md text-sm font-medium text-white bg-accent-secondary shadow-lg 
+                transition-all duration-300 ease-in-out
+                hover:shadow-glow-primary hover:-translate-y-0.5
+                disabled:bg-background-secondary disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none
+              "
+            >
+              {loading ? 'РЎРѕР·РґР°РЅРёРµ...' : 'РЎРѕР·РґР°С‚СЊ'}
+            </button>
+          </div>
+        </form>
+      </div>
+    );
+}
+
+--- END OF FILE: frontend/src/components/SignupForm.js ---
+
+
+--- START OF FILE: frontend/src/components/TrainingMode.js ---
+// components/TrainingMode.js
+"use client";
+
+import { useState } from 'react';
+import { useAuth } from '../hooks/useAuth';
+import axios from 'axios';
+
+const exercisesDB = [
+  { id: 1, name: 'РћС‚Р¶РёРјР°РЅРёСЏ', group: 'push' },
+  { id: 2, name: 'РџРѕРґС‚СЏРіРёРІР°РЅРёСЏ', group: 'pull' },
+  { id: 3, name: 'РџСЂРёСЃРµРґР°РЅРёСЏ', group: 'legs' },
+];
+
+const API_URL = 'http://localhost:3001';
+
+const TrainingMode = ({ onClose }) => {
+  const { token, updateUserAndProfile } = useAuth();
+  const [exerciseId, setExerciseId] = useState(exercisesDB[0].id);
+  const [reps, setReps] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setIsLoading(true);
+    try {
+      const response = await axios.post(
+        `${API_URL}/activity/exercise`,
+        { exerciseId: parseInt(exerciseId), reps: parseInt(reps), isTrainingMode: true },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      updateUserAndProfile(response.data);
+      alert('РўСЂРµРЅРёСЂРѕРІРєР° Р·Р°СЃС‡РёС‚Р°РЅР°! РЎС‚Р°С‚С‹ РІС‹СЂРѕСЃР»Рё.');
+      onClose();
+    } catch (err) {
+      setError(err.response?.data?.message || 'РџСЂРѕРёР·РѕС€Р»Р° РѕС€РёР±РєР°.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex justify-center items-center z-50 animate-fade-in-up">
+      <div className="w-full max-w-md p-8 space-y-6 bg-background-secondary rounded-2xl shadow-xl text-text-primary border border-success/30 relative">
+        <button onClick={onClose} className="absolute top-3 right-4 text-text-secondary hover:text-white text-2xl font-bold">Г—</button>
+        <h2 className="text-2xl font-display font-bold text-center">Р РµР¶РёРј РўСЂРµРЅРёСЂРѕРІРєРё</h2>
+        <p className="text-center text-sm text-text-secondary">Р РѕСЃС‚ СЃС‚Р°С‚РѕРІ Р±РµР· РїРѕР»СѓС‡РµРЅРёСЏ XP.</p>
+        <form onSubmit={handleSubmit} className="space-y-4">
+           <div>
+              <label htmlFor="exercise-training" className="block text-sm font-medium text-text-secondary">РЈРїСЂР°Р¶РЅРµРЅРёРµ</label>
+              <select id="exercise-training" value={exerciseId} onChange={(e) => setExerciseId(e.target.value)} className="mt-1 block w-full px-3 py-2 bg-background-primary border border-text-secondary/30 rounded-md focus:ring-success focus:border-success transition">
+                {exercisesDB.map(ex => <option key={ex.id} value={ex.id}>{ex.name}</option>)}
+              </select>
+            </div>
+            <div>
+              <label htmlFor="reps-training" className="block text-sm font-medium text-text-secondary">РџРѕРІС‚РѕСЂРµРЅРёСЏ</label>
+              <input id="reps-training" type="number" value={reps} onChange={(e) => setReps(e.target.value)} placeholder="РљРѕР»РёС‡РµСЃС‚РІРѕ" className="mt-1 block w-full px-3 py-2 bg-background-primary border border-text-secondary/30 rounded-md focus:ring-success focus:border-success transition" required />
+            </div>
+            {error && <p className="text-sm text-danger text-center">{error}</p>}
+            <button type="submit" disabled={isLoading} className="w-full flex justify-center py-3 px-4 rounded-md text-sm font-medium text-white bg-success shadow-lg transition-all duration-300 ease-in-out hover:shadow-glow-primary hover:-translate-y-0.5 disabled:bg-background-secondary disabled:text-text-secondary disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none">
+              {isLoading ? 'РЎРѕС…СЂР°РЅРµРЅРёРµ...' : 'Р—Р°РІРµСЂС€РёС‚СЊ РїРѕРґС…РѕРґ'}
+            </button>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export default TrainingMode;
+
+--- END OF FILE: frontend/src/components/TrainingMode.js ---
+
+
+--- START OF FILE: frontend/src/context/GameContext.js ---
+// src/context/GameContext.js
+"use client";
+
+import { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { useAuth } from '@/hooks/useAuth';
+
+// РћРїСЂРµРґРµР»СЏРµРј РІРѕР·РјРѕР¶РЅС‹Рµ СЃРѕСЃС‚РѕСЏРЅРёСЏ РёРіСЂРѕРІРѕРіРѕ С†РёРєР»Р° РґР»СЏ СЏСЃРЅРѕСЃС‚Рё Рё РЅР°РґРµР¶РЅРѕСЃС‚Рё
+export const GAME_STATES = {
+  PROFILE: 'PROFILE',   // РћС‚РѕР±СЂР°Р¶Р°РµС‚СЃСЏ РїСЂРѕС„РёР»СЊ Рё РєРЅРѕРїРєР° "РќР°С‡Р°С‚СЊ С‡С‚РµРЅРёРµ"
+  UPLOADING: 'UPLOADING', // РћС‚РѕР±СЂР°Р¶Р°РµС‚СЃСЏ ImageUploader
+  QUIZ: 'QUIZ',         // РћС‚РѕР±СЂР°Р¶Р°РµС‚СЃСЏ QuizComponent
+  EXERCISE: 'EXERCISE',   // РћС‚РѕР±СЂР°Р¶Р°РµС‚СЃСЏ EnduranceGate
+};
+
+const GameContext = createContext();
+
+export const GameProvider = ({ children }) => {
+  const { profile } = useAuth();
+  const [gameState, setGameState] = useState(GAME_STATES.PROFILE);
+  const [quizData, setQuizData] = useState(null);
+
+  // РЎРёРЅС…СЂРѕРЅРёР·РёСЂСѓРµРј СЃРѕСЃС‚РѕСЏРЅРёРµ РёРіСЂС‹ СЃ РїСЂРѕС„РёР»РµРј РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
+  useEffect(() => {
+    if (profile) {
+      // Р•СЃР»Рё С‡С‚РµРЅРёРµ РЅРµ СЂР°Р·Р±Р»РѕРєРёСЂРѕРІР°РЅРѕ, Р·РЅР°С‡РёС‚, РЅСѓР¶РЅРѕ РґРµР»Р°С‚СЊ СѓРїСЂР°Р¶РЅРµРЅРёРµ
+      if (!profile.isReadingUnlocked) {
+        setGameState(GAME_STATES.EXERCISE);
+      } else {
+        // РРЅР°С‡Рµ, РІРѕР·РІСЂР°С‰Р°РµРјСЃСЏ РІ СЃРѕСЃС‚РѕСЏРЅРёРµ РїСЂРѕС„РёР»СЏ
+        setGameState(GAME_STATES.PROFILE);
+      }
+    }
+  }, [profile]); // Р—Р°РІРёСЃРёРјРѕСЃС‚СЊ РѕС‚ profile
+
+  // Р”РµР№СЃС‚РІРёСЏ РґР»СЏ СѓРїСЂР°РІР»РµРЅРёСЏ С†РёРєР»РѕРј
+  const startReading = useCallback(() => {
+    if (profile?.isReadingUnlocked) {
+      setGameState(GAME_STATES.UPLOADING);
+    }
+  }, [profile]);
+
+  const handleQuizReady = useCallback((data) => {
+    setQuizData(data);
+    setGameState(GAME_STATES.QUIZ);
+  }, []);
+
+  const handleQuizSuccess = useCallback(() => {
+    setQuizData(null);
+    setGameState(GAME_STATES.EXERCISE);
+  }, []);
+
+  const handleCycleComplete = useCallback(() => {
+    setGameState(GAME_STATES.PROFILE);
+  }, []);
+
+  const value = {
+    gameState,
+    quizData,
+    startReading,
+    handleQuizReady,
+    handleQuizSuccess,
+    handleCycleComplete,
+  };
+
+  return <GameContext.Provider value={value}>{children}</GameContext.Provider>;
+};
+
+export const useGame = () => {
+  return useContext(GameContext);
+};
+
+--- END OF FILE: frontend/src/context/GameContext.js ---
+
+
+--- START OF FILE: frontend/src/hooks/useAuth.js ---
+// hooks/useAuth.js
+"use client";
+
+import { useState, useEffect, useContext, createContext } from 'react';
+import axios from 'axios';
+
+const API_URL = 'http://localhost:3001';
+
+const AuthContext = createContext();
+
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  const [profile, setProfile] = useState(null);
+  const [token, setToken] = useState(null);
+  const [loading, setLoading] = useState(true); // РќР°С‡РёРЅР°РµРј СЃ true
+
+  // v7.0 РРЎРџР РђР’Р›Р•РќРР•: РСЃРїРѕР»СЊР·СѓРµРј async/await РІРЅСѓС‚СЂРё useEffect
+  useEffect(() => {
+    const loadUserFromStorage = async () => {
+      const storedToken = localStorage.getItem('token');
+      if (storedToken) {
+        setToken(storedToken);
+        try {
+          // РџС‹С‚Р°РµРјСЃСЏ РїРѕР»СѓС‡РёС‚СЊ РґР°РЅРЅС‹Рµ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
+          const res = await axios.get(`${API_URL}/profile`, {
+            headers: { Authorization: `Bearer ${storedToken}` },
+          });
+          setProfile(res.data);
+          setUser(res.data.user);
+        } catch (error) {
+          console.error("РќРµ СѓРґР°Р»РѕСЃСЊ РїРѕР»СѓС‡РёС‚СЊ РґР°РЅРЅС‹Рµ РїРѕ С‚РѕРєРµРЅСѓ, РІС‹С…РѕРґРёРј.", error);
+          localStorage.removeItem('token'); // РЈРґР°Р»СЏРµРј РЅРµРІР°Р»РёРґРЅС‹Р№ С‚РѕРєРµРЅ
+        }
+      }
+      // РЈР±РёСЂР°РµРј Р·Р°РіСЂСѓР·РєСѓ РўРћР›Р¬РљРћ РџРћРЎР›Р• С‚РѕРіРѕ, РєР°Рє РІСЃРµ РїСЂРѕРІРµСЂРєРё Р·Р°РІРµСЂС€РµРЅС‹
+      setLoading(false);
+    };
+
+    loadUserFromStorage();
+  }, []);
+
+  const login = async (email, password) => {
+    try {
+      const res = await axios.post(`${API_URL}/auth/login`, { email, password });
+      const { token } = res.data;
+      localStorage.setItem('token', token);
+      setToken(token);
+      
+      // РЎСЂР°Р·Сѓ РїРѕСЃР»Рµ Р»РѕРіРёРЅР° РїРѕР»СѓС‡Р°РµРј РІСЃРµ РґР°РЅРЅС‹Рµ РїСЂРѕС„РёР»СЏ
+      const profileRes = await axios.get(`${API_URL}/profile`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setProfile(profileRes.data);
+      setUser(profileRes.data.user);
+
+    } catch (error) {
+      console.error("РћС€РёР±РєР° РІС…РѕРґР°:", error);
+      throw error; // РџСЂРѕР±СЂР°СЃС‹РІР°РµРј РѕС€РёР±РєСѓ, С‡С‚РѕР±С‹ РєРѕРјРїРѕРЅРµРЅС‚ РјРѕРі РµРµ РїРѕР№РјР°С‚СЊ
+    }
+  };
+
+  const logout = () => {
+    localStorage.removeItem('token');
+    setToken(null);
+    setUser(null);
+    setProfile(null);
+  };
+
+  const updateUserAndProfile = (updatedData) => {
+    if (updatedData.updatedProfile) {
+      setProfile(prevProfile => ({ ...prevProfile, ...updatedData.updatedProfile }));
+    }
+    if (updatedData.updatedUser) {
+      setUser(prevUser => ({ ...prevUser, ...updatedData.updatedUser }));
+    }
+  };
+
+  const value = {
+    token,
+    user,
+    profile,
+    loading,
+    login,
+    logout,
+    updateUserAndProfile,
+  };
+
+  // v7.0 РРЎРџР РђР’Р›Р•РќРР•: РќРµ СЂРµРЅРґРµСЂРёРј РґРµС‚РµР№, РїРѕРєР° РёРґРµС‚ РїРµСЂРІРѕРЅР°С‡Р°Р»СЊРЅР°СЏ Р·Р°РіСЂСѓР·РєР°
+  return (
+    <AuthContext.Provider value={value}>
+      {loading ? <div>Р—Р°РіСЂСѓР·РєР° РїСЂРёР»РѕР¶РµРЅРёСЏ...</div> : children}
+    </AuthContext.Provider>
+  );
+};
+
+export const useAuth = () => {
+  return useContext(AuthContext);
+};
+
+--- END OF FILE: frontend/src/hooks/useAuth.js ---
+
+
+--- START OF FILE: frontend/src/utils/gameLogic.js ---
+// utils/gameLogic.js
+/**
+ * Р Р°СЃСЃС‡РёС‚С‹РІР°РµС‚ РєРѕР»РёС‡РµСЃС‚РІРѕ РѕРїС‹С‚Р°, РЅРµРѕР±С…РѕРґРёРјРѕРµ РґР»СЏ РґРѕСЃС‚РёР¶РµРЅРёСЏ СЃР»РµРґСѓСЋС‰РµРіРѕ СѓСЂРѕРІРЅСЏ.
+ * Р¤РѕСЂРјСѓР»Р°: floor(100 * (L ^ 1.5))
+ * @param {number} level РўРµРєСѓС‰РёР№ СѓСЂРѕРІРµРЅСЊ.
+ * @returns {number} РљРѕР»РёС‡РµСЃС‚РІРѕ XP РґР»СЏ СЃР»РµРґСѓСЋС‰РµРіРѕ СѓСЂРѕРІРЅСЏ.
+ */
+export const calculateXpForLevel = (level) => {
+    if (!level || level < 1) return 100; // Р—Р°С‰РёС‚Р° РѕС‚ РѕС€РёР±РѕРє
+    return Math.floor(100 * Math.pow(level, 1.5));
+  };
+
+  /**
+ * Р Р°СЃСЃС‡РёС‚С‹РІР°РµС‚ СЂРµРєРѕРјРµРЅРґСѓРµРјРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ РїРѕРІС‚РѕСЂРµРЅРёР№ РґР»СЏ СѓРїСЂР°Р¶РЅРµРЅРёСЏ.
+ * Р¤РѕСЂРјСѓР»Р°: floor(3 + (РЈСЂРѕРІРµРЅСЊ / 5) + (END / 10))
+ * @param {number} level РЈСЂРѕРІРµРЅСЊ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ.
+ * @param {number} statEnd РҐР°СЂР°РєС‚РµСЂРёСЃС‚РёРєР° "Р’С‹РЅРѕСЃР»РёРІРѕСЃС‚СЊ" (END).
+ * @returns {number} Р РµРєРѕРјРµРЅРґРѕРІР°РЅРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ РїРѕРІС‚РѕСЂРµРЅРёР№.
+ */
+export const getRecommendedReps = (level, statEnd) => {
+  if (!level || !statEnd) return 3; // Р—Р°С‰РёС‚Р° РѕС‚ РѕС€РёР±РѕРє
+  return Math.floor(3 + (level / 5) + (statEnd / 10));
+};
+
+--- END OF FILE: frontend/src/utils/gameLogic.js ---
+
+

@@ -2,9 +2,8 @@
 "use client";
 
 import { useState, useEffect, useContext, createContext } from 'react';
-import axios from 'axios';
-
-const API_URL = 'http://localhost:3001';
+import { api } from '@/services/api';
+import { AUTH_TOKEN_KEY } from '@/utils/constants';
 
 const AuthContext = createContext();
 
@@ -17,19 +16,17 @@ export const AuthProvider = ({ children }) => {
   // v7.0 ИСПРАВЛЕНИЕ: Используем async/await внутри useEffect
   useEffect(() => {
     const loadUserFromStorage = async () => {
-      const storedToken = localStorage.getItem('token');
+      const storedToken = localStorage.getItem(AUTH_TOKEN_KEY);
       if (storedToken) {
         setToken(storedToken);
         try {
           // Пытаемся получить данные пользователя
-          const res = await axios.get(`${API_URL}/profile`, {
-            headers: { Authorization: `Bearer ${storedToken}` },
-          });
+          const res = await api.getProfile();
           setProfile(res.data);
           setUser(res.data.user);
         } catch (error) {
           console.error("Не удалось получить данные по токену, выходим.", error);
-          localStorage.removeItem('token'); // Удаляем невалидный токен
+          localStorage.removeItem(AUTH_TOKEN_KEY); // Удаляем невалидный токен
         }
       }
       // Убираем загрузку ТОЛЬКО ПОСЛЕ того, как все проверки завершены
@@ -41,15 +38,13 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const res = await axios.post(`${API_URL}/auth/login`, { email, password });
+      const res = await api.login(email, password);
       const { token } = res.data;
-      localStorage.setItem('token', token);
+      localStorage.setItem(AUTH_TOKEN_KEY, token);
       setToken(token);
       
       // Сразу после логина получаем все данные профиля
-      const profileRes = await axios.get(`${API_URL}/profile`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const profileRes = await api.getProfile();
       setProfile(profileRes.data);
       setUser(profileRes.data.user);
 
@@ -60,7 +55,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
+    localStorage.removeItem(AUTH_TOKEN_KEY);
     setToken(null);
     setUser(null);
     setProfile(null);

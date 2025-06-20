@@ -3,7 +3,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import axios from 'axios';
+import { api } from '@/services/api';
 import { useAuth } from '@/hooks/useAuth';
 
 export default function SignupForm() {
@@ -20,7 +20,7 @@ export default function SignupForm() {
         setError('');
         setLoading(true);
         try {
-            await axios.post('http://localhost:3001/auth/signup', { name, email, password });
+            await api.signup(name, email, password);
             await auth.login(email, password);
             router.push('/dashboard');
         } catch (err) {

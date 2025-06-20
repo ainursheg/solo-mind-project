@@ -1,35 +1,48 @@
 // components/TrainingMode.js
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect  } from 'react';
 import { useAuth } from '../hooks/useAuth';
-import axios from 'axios';
-
-const exercisesDB = [
-  { id: 1, name: 'Отжимания', group: 'push' },
-  { id: 2, name: 'Подтягивания', group: 'pull' },
-  { id: 3, name: 'Приседания', group: 'legs' },
-];
-
-const API_URL = 'http://localhost:3001';
+import { api } from '@/services/api';
 
 const TrainingMode = ({ onClose }) => {
-  const { token, updateUserAndProfile } = useAuth();
-  const [exerciseId, setExerciseId] = useState(exercisesDB[0].id);
+  const { updateUserAndProfile } = useAuth();
+
+  const [exercises, setExercises] = useState([]);
+  const [exerciseId, setExerciseId] = useState('');
+
   const [reps, setReps] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+
+  // Загружаем упражнения при монтировании компонента
+  useEffect(() => {
+    const fetchExercises = async () => {
+      try {
+        const response = await api.getExercises();
+        setExercises(response.data);
+        // Устанавливаем начальное значение для select, если данные пришли
+        if (response.data.length > 0) {
+          setExerciseId(response.data[0].id);
+        }
+      } catch (error) {
+        console.error("Ошибка загрузки упражнений:", error);
+        setError("Не удалось загрузить список упражнений.");
+      }
+    };
+    fetchExercises();
+  }, []); // Пустой массив зависимостей для выполнения один раз
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setIsLoading(true);
     try {
-      const response = await axios.post(
-        `${API_URL}/activity/exercise`,
-        { exerciseId: parseInt(exerciseId), reps: parseInt(reps), isTrainingMode: true },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const response = await api.submitExercise({
+        exerciseId: parseInt(exerciseId),
+        reps: parseInt(reps),
+        isTrainingMode: true,
+      });
       updateUserAndProfile(response.data);
       alert('Тренировка засчитана! Статы выросли.');
       onClose();
@@ -50,7 +63,7 @@ const TrainingMode = ({ onClose }) => {
            <div>
               <label htmlFor="exercise-training" className="block text-sm font-medium text-text-secondary">Упражнение</label>
               <select id="exercise-training" value={exerciseId} onChange={(e) => setExerciseId(e.target.value)} className="mt-1 block w-full px-3 py-2 bg-background-primary border border-text-secondary/30 rounded-md focus:ring-success focus:border-success transition">
-                {exercisesDB.map(ex => <option key={ex.id} value={ex.id}>{ex.name}</option>)}
+                {exercises.map(ex => <option key={ex.id} value={ex.id}>{ex.name}</option>)}
               </select>
             </div>
             <div>
